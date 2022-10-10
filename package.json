@@ -5,12 +5,20 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start": "vue-cli-service serve --open"
   },
   "dependencies": {
+    "autoprefixer": "^10.4.12",
+    "axios": "^1.1.2",
     "core-js": "^3.8.3",
+    "mdb-vue-ui-kit": "./mdb/mdb-vue-ui-kit-3.0.0.tgz",
+    "moment": "^2.29.4",
+    "socket.io-client": "^4.5.2",
+    "sweetalert2": "^11.5.0",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
+    "vue-toastification": "^2.0.0-rc.5",
     "vuex": "^4.0.0"
   },
   "devDependencies": {
@@ -27,7 +35,8 @@
     "eslint-plugin-vue": "^8.0.3",
     "prettier": "^2.4.1",
     "sass": "^1.32.7",
-    "sass-loader": "^12.0.0"
+    "sass-loader": "^12.0.0",
+    "vue-cli-plugin-mdb5": "~1.2.0"
   },
   "eslintConfig": {
     "root": true,
