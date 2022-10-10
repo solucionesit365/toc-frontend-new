@@ -167,6 +167,7 @@
       </div>
     </MDBModalBody>
   </MDBModal>
+  <ModalClientesComponent ref="ejemplo" />
 </template>
 <script>
 import { ref, computed, onMounted } from "vue";
@@ -175,19 +176,20 @@ import router from "../router/index";
 import Swal from "sweetalert2";
 import { MDBModal, MDBModalBody, MDBBtn } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
+import ModalClientesComponent from "../components/main/ModalClientes.vue";
 
 export default {
   name: "AbrirCajaView",
   components: {
     MDBModal,
-
+    ModalClientesComponent,
     MDBModalBody,
-
     MDBBtn,
   },
   setup() {
     const store = useStore();
     const modalConfirmacionApertura = ref(false);
+    const ejemplo = ref(null);
     const infoDinero = ref([
       { valor: 0, style: "" },
       { valor: 0, style: "" },
@@ -387,6 +389,8 @@ export default {
     }
 
     onMounted(() => {
+      ejemplo.value.abrirModal();
+
       axios
         .get("caja/getMonedasUltimoCierre")
         .then((res) => {
@@ -411,6 +415,7 @@ export default {
     });
 
     return {
+      ejemplo,
       volver,
       infoDinero,
       activo,
