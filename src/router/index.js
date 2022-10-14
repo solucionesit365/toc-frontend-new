@@ -3,13 +3,18 @@ import LoaderComponent from "../components/Loader.vue";
 const routes = [
   {
     path: "/",
-    name: "home",
+    name: "Loader",
     component: LoaderComponent,
   },
   {
     path: "/abrirCaja",
     name: "Abrir caja",
     component: () => import("../views/AbrirCajaView.vue"),
+  },
+  {
+    path: "/main",
+    name: "Main",
+    component: () => import("../views/MainView.vue"),
   },
 ];
 

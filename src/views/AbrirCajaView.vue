@@ -168,9 +168,10 @@
     </MDBModalBody>
   </MDBModal>
   <ModalClientesComponent ref="ejemplo" />
+  <span v-if="ejemplo"> agujero al child: {{ ejemplo.datoBorrar }}</span>
 </template>
 <script>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, provide } from "vue";
 import axios from "axios";
 import router from "../router/index";
 import Swal from "sweetalert2";
@@ -182,14 +183,15 @@ export default {
   name: "AbrirCajaView",
   components: {
     MDBModal,
-    ModalClientesComponent,
     MDBModalBody,
     MDBBtn,
+    ModalClientesComponent,
   },
   setup() {
     const store = useStore();
     const modalConfirmacionApertura = ref(false);
     const ejemplo = ref(null);
+    const lolaso = computed(() => 69);
     const infoDinero = ref([
       { valor: 0, style: "" },
       { valor: 0, style: "" },
@@ -380,6 +382,10 @@ export default {
       );
     }
 
+    function doSomething(x) {
+      console.log("IMPRESIONANTE" + x);
+    }
+
     function abrirModalConfirmacion() {
       modalConfirmacionApertura.value = true;
     }
@@ -389,8 +395,8 @@ export default {
     }
 
     onMounted(() => {
-      ejemplo.value.abrirModal();
-
+      // ejemplo.value.abrirModal();
+      console.log(ejemplo.value.datoBorrar);
       axios
         .get("caja/getMonedasUltimoCierre")
         .then((res) => {
@@ -414,7 +420,10 @@ export default {
         });
     });
 
+    provide("doSomething", doSomething);
+
     return {
+      lolaso,
       ejemplo,
       volver,
       infoDinero,

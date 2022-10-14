@@ -10,11 +10,13 @@
       <MDBBtn>SUPER PRUEBA</MDBBtn>
     </MDBModalBody>
   </MDBModal>
+  {{ datoBorrar }}
+  <button @click="test()">SUPER BOTÓN</button>
 </template>
 
 <script>
 import { MDBModal, MDBModalBody, MDBBtn } from "mdb-vue-ui-kit";
-import { ref } from "vue";
+import { ref, inject, onMounted } from "vue";
 
 export default {
   name: "ModalClientesComponent",
@@ -25,16 +27,29 @@ export default {
   },
   setup(_props, context) {
     const modalClientes = ref(false);
-
+    const datoBorrar = ref(0);
     function abrirModal() {
       modalClientes.value = true;
     }
 
+    function test() {
+      datoBorrar.value++;
+    }
+
+    const doSomething = inject("doSomething");
+
     context.expose({
       abrirModal,
+      datoBorrar,
+    });
+
+    onMounted(() => {
+      doSomething("jajj");
     });
 
     return {
+      test,
+      datoBorrar,
       modalClientes,
     };
   },
