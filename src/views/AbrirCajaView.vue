@@ -350,30 +350,27 @@ export default {
       cantidad3G.value = 0;
     }
 
-    function abrirCaja() {
-      axios
-        .post("/caja/abrirCaja", {
-          total: getTotal.value,
-          detalle: getDetalle.value,
-          idDependienta: store.getters["Trabajadores/getTrabajadorActivo"]._id,
-        })
-        .then((res) => {
-          if (res.data) {
-            cerrarModalConfirmacion();
-            Swal.fire("¡Todo OK!", "Caja abierta correctamente", "success");
-            router.push("/main");
-          } else {
-            Swal.fire("Error", "Error en la apertura", "error");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          Swal.fire(
-            "Error",
-            "Error en la apertura! Contacta con informática",
-            "error"
-          );
-        });
+    async function abrirCaja() {
+      try {
+        const resApertura = (
+          await axios.post("/caja/abrirCaja", {
+            total: getTotal.value,
+            detalle: getDetalle.value,
+            idDependienta:
+              store.getters["Trabajadores/getTrabajadorActivo"]._id,
+          })
+        ).data;
+        if (resApertura) {
+          cerrarModalConfirmacion();
+          Swal.fire("¡Todo OK!", "Caja abierta correctamente", "success");
+          router.push("/main");
+        } else {
+          throw Error("No se ha podido abrir la caja");
+        }
+      } catch (err) {
+        console.log(err);
+        Swal.fire("Error", err.messaeg, "error");
+      }
     }
 
     function borrarNumero() {
