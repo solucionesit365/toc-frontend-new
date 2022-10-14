@@ -25,6 +25,7 @@ export default {
       tocGame.cargarTrabajadoresFichados();
       tocGame.cargarCestas();
       tocGame.cargarVentas();
+      tocGame.cargarTeclado();
       tocGame.iniciarToc();
     }, 5000);
     return {};

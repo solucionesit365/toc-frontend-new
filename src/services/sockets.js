@@ -51,6 +51,21 @@ socket.on("cargarVentas", (arrayTickets) => {
   }
 });
 
+/* Eze 4.0 */
+socket.on("cargarTeclado", (teclado) => {
+  try {
+    console.log("cargarTeclado: ", teclado);
+    if (teclado) {
+      store.dispatch("Teclado/setTeclado", teclado);
+    } else {
+      throw Error("Error, teclado no es correcto");
+    }
+  } catch (err) {
+    console.log(err);
+    toast.error(err.message);
+  }
+});
+
 socket.on("disconnect", () => {
   console.log("Desconectado del servidor");
   socket.sendBuffer = [];

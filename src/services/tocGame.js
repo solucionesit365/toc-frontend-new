@@ -76,6 +76,9 @@ class tocGameV3 {
 
   /* Eze 4.0 */
   cargarVentas = () => emitSocket("cargarVentas");
+
+  /* Eze 4.0 */
+  cargarTeclado = () => emitSocket("cargarTeclado");
 }
 
 export const tocGame = new tocGameV3();

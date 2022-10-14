@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 import Trabajadores from "./Trabajadores";
 import Cestas from "./Cestas";
 import Caja from "./Caja";
+import Teclado from "./Teclado";
 
 export default createStore({
   state: {},
@@ -12,5 +13,6 @@ export default createStore({
     Caja,
     Cestas,
     Trabajadores,
+    Teclado,
   },
 });
