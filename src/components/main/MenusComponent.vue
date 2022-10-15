@@ -50,7 +50,8 @@ export default {
   font-size: 1.2rem;
   height: 70px;
   font-weight: bold;
-  max-width: 13rem;
+  max-width: 12.89rem;
+  min-width: 12.89rem;
 }
 
 .activo {
