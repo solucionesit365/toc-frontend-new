@@ -1,12 +1,20 @@
 <template>
-  <div class="row">
+  <div
+    v-if="
+      teclado &&
+      teclado[indexMenuActivo] &&
+      teclado[indexMenuActivo].arraySubmenus &&
+      teclado[indexMenuActivo].arraySubmenus.length > 0
+    "
+    class="row mt-1"
+  >
     <div class="btn-group shadow-none" role="group">
       <button
-        v-for="(item, index) in teclado"
+        v-for="(item, index) in teclado[indexMenuActivo].arraySubmenus"
         v-bind:key="index"
-        :class="{ activo: index == indexMenuActivo }"
-        class="btn btn-secondary border border-1 rounded botonesMenu menusColorIvan"
-        @click="setActivo(index)"
+        :class="{ activo: index == indexSubmenuActivo }"
+        class="btn btn-secondary border border-1 rounded botonesSubmenus menusColorIvan"
+        @click="setIndexSubmenu(index)"
       >
         {{ item.nombre }}
       </button>
@@ -15,44 +23,40 @@
 </template>
 
 <script>
-import { computed, onMounted } from "vue";
 import store from "@/store";
+import { computed } from "vue";
 
 export default {
-  name: "MenusComponent",
-  setup(_props, { expose }) {
+  name: "SubmenusComponent",
+  setup() {
     const teclado = computed(() => store.state.Teclado.objTeclado);
     const indexMenuActivo = computed(() => store.state.Teclado.indexMenuActivo);
+    const indexSubmenuActivo = computed(
+      () => store.state.Teclado.indexSubmenuActivo
+    );
 
-    function setActivo(x) {
-      store.dispatch("Teclado/setIndexMenuActivo", x);
+    function setIndexSubmenu(x) {
+      store.dispatch("Teclado/setIndexSubmenuActivo", x);
     }
-
-    onMounted(() => {
-      setActivo(0);
-    });
-
-    expose({
-      indexMenuActivo,
-    });
 
     return {
       teclado,
       indexMenuActivo,
-      setActivo,
+      indexSubmenuActivo,
+      setIndexSubmenu,
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.botonesMenu {
-  background-color: #fff5e9;
-  color: #c95907;
-  border-color: #bf5c18 !important;
+.botonesSubmenus {
+  background-color: #adadadbd;
+  color: #fffaee;
+  border-color: #adadadbd !important;
   margin-right: 4px;
-  font-size: 18px;
-  height: 70px;
+  font-size: 16.4px;
+  height: 50px;
   font-weight: bold;
   max-width: 9.24rem;
   min-width: 9.24rem;
@@ -61,28 +65,28 @@ export default {
 }
 
 .activo {
-  background-color: #d45600 !important;
+  background-color: #007fd4 !important;
   color: #fffaee !important;
-  border-color: #d45600 !important;
+  border-color: #007fd4 !important;
 }
 .btn-secondary:hover {
-  color: #c95907;
+  color: #fffaee;
   background-color: #fff5e9;
-  border-color: #bf5c18 !important;
+  border-color: #adadadbd !important;
 }
 .btn-secondary:focus,
 .btn-secondary.focus {
   background-color: #fff5e9;
-  color: #c95907;
-  border-color: #bf5c18 !important;
+  color: #fffaee;
+  border-color: #adadadbd !important;
   box-shadow: none !important;
 }
 
 .btn-secondary:not(:disabled):not(.disabled).active,
 .show > .btn-secondary.dropdown-toggle {
   background-color: #fff5e9;
-  color: #c95907;
-  border-color: #bf5c18 !important;
+  color: #fffaee;
+  border-color: #adadadbd !important;
 }
 .btn-secondary:not(:disabled):not(.disabled):active:focus,
 .btn-secondary:not(:disabled):not(.disabled).active:focus
@@ -92,25 +96,25 @@ export default {
 }
 
 .menusColorIvan.btn-secondary:hover {
-  color: #c95907;
+  color: #fffaee;
   background-color: #fff5e9;
-  border-color: #bf5c18 !important;
+  border-color: #adadadbd !important;
   border-width: 3px;
 }
 .menusColorIvan.btn-secondary:focus,
 .btn-secondary.focus {
-  color: #c95907;
+  color: #fffaee;
   background-color: #fff5e9;
-  border-color: #bf5c18 !important;
+  border-color: #adadadbd !important;
   box-shadow: none !important;
   border-width: 3px;
 }
 .menusColorIvan.btn-secondary:not(:disabled):not(.disabled):active,
 .btn-secondary:not(:disabled):not(.disabled).active,
 .show > .btn-secondary.dropdown-toggle {
-  color: #c95907;
+  color: #fffaee;
   background-color: #fff5e9;
-  border-color: #bf5c18 !important;
+  border-color: #adadadbd !important;
   border-width: 3px;
 }
 
