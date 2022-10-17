@@ -25,7 +25,6 @@ socket.on("cargarTrabajadores", (arrayTrabajadores) => {
 socket.on("cargarCestas", (arrayCestas) => {
   try {
     if (arrayCestas) {
-      console.log(arrayCestas);
       store.dispatch("Cestas/setArrayCestasAction", arrayCestas);
     } else {
       throw Error("Error, arrayCestas no es correcto");
@@ -39,7 +38,6 @@ socket.on("cargarCestas", (arrayCestas) => {
 /* Eze 4.0 */
 socket.on("cargarVentas", (arrayTickets) => {
   try {
-    console.log("arrayTickets: ", arrayTickets);
     if (arrayTickets) {
       store.dispatch("Caja/setArrayVentas", arrayTickets);
     } else {
@@ -54,7 +52,6 @@ socket.on("cargarVentas", (arrayTickets) => {
 /* Eze 4.0 */
 socket.on("cargarTeclado", (teclado) => {
   try {
-    console.log("cargarTeclado: ", teclado);
     if (teclado) {
       store.dispatch("Teclado/setTeclado", teclado);
     } else {
