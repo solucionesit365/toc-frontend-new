@@ -8,7 +8,7 @@
           class="itemCesta"
           v-bind:class="{
             estiloPromo: item.promocion,
-            seleccionado: activo === index,
+            seleccionado: indexItemCestaActivo === index,
           }"
         >
           <td>
@@ -61,6 +61,9 @@ export default {
   },
   setup() {
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
+    const indexItemCestaActivo = computed(
+      () => store.state.Cestas.indexItemActivo
+    );
     const arrayTrabajadores = computed(
       () => store.state.Trabajadores.arrayTrabajadores
     );
@@ -97,6 +100,7 @@ export default {
       listaAlReves,
       arrayTrabajadores,
       indexTrabajadorActivo,
+      indexItemCestaActivo,
     };
   },
 };

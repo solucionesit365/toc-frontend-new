@@ -12,7 +12,16 @@
       </MDBModalTitle>
     </MDBModalHeader>
     <MDBModalBody class="mx-auto">
-      <NumpadComponent />
+      <div class="row">
+        <MDBInput
+          v-if="numpadRef && numpadRef.gramos"
+          v-model="numpadRef.gramos"
+          disabled
+        />
+      </div>
+      <div class="row">
+        <NumpadComponent ref="numpadRef" />
+      </div>
     </MDBModalBody>
     <MDBModalFooter>
       <MDBBtn color="danger" @click="modalPeso = false" size="lg">
@@ -31,6 +40,7 @@ import {
   MDBModalBody,
   MDBModalFooter,
   MDBBtn,
+  MDBInput,
 } from "mdb-vue-ui-kit";
 import NumpadComponent from "../NumpadComponent.vue";
 import { ref, provide } from "vue";
@@ -43,10 +53,12 @@ export default {
     MDBModalBody,
     MDBModalFooter,
     MDBBtn,
+    MDBInput,
     NumpadComponent,
   },
   setup(_props, { expose }) {
     const modalPeso = ref(false);
+    const numpadRef = ref(null);
 
     function abrirModal() {
       modalPeso.value = true;
@@ -60,10 +72,16 @@ export default {
       console.log("AQUÍ SE TIENE QUE LLAMAR AL MÉTODO DEL PADRE", gramos);
     }
 
+    function test() {
+      console.log(45);
+    }
+
     provide("okValue", addItem);
 
     return {
       modalPeso,
+      numpadRef,
+      test,
     };
   },
 };

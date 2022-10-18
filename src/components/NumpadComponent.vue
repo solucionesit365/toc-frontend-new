@@ -1,5 +1,4 @@
 <template>
-  <MDBInput disabled v-model="gramos" class="w-100" />
   <div class="btn-group-vertical mt-1">
     <div class="btn-group">
       <button
@@ -98,13 +97,9 @@
 
 <script>
 import { ref, inject } from "vue";
-import { MDBInput } from "mdb-vue-ui-kit";
 export default {
   name: "NumpadComponent",
-  components: {
-    MDBInput,
-  },
-  setup() {
+  setup(_props, { expose }) {
     const gramos = ref("0");
     const okValue = inject("okValue");
 
@@ -117,6 +112,10 @@ export default {
       gramos.value = gramos.value.slice(0, -1);
       if (gramos.value === "") gramos.value = "0";
     }
+
+    expose({
+      gramos,
+    });
 
     return {
       okValue,

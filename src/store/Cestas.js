@@ -3,14 +3,14 @@ export default {
   state: {
     arrayCestas: [],
     idCestaActiva: null,
-    itemActivo: null,
+    indexItemActivo: null,
   },
   mutations: {
     setArrayCestasMutation(state, payload) {
       state.arrayCestas = payload;
     },
     setActivoMutation(state, payload) {
-      state.itemActivo = payload;
+      state.indexItemActivo = payload;
     },
     setIdCestaActivaMutation(state, payload) {
       state.idCestaActiva = payload;
