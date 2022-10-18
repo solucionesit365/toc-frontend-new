@@ -8,12 +8,15 @@
     "
     class="row mt-1"
   >
-    <div class="btn-group shadow-none" role="group">
+    <div
+      class="col"
+      style="padding: 0px 6px 0px 1px"
+      v-for="(item, index) in teclado[indexMenuActivo].arraySubmenus"
+      v-bind:key="index"
+    >
       <button
-        v-for="(item, index) in teclado[indexMenuActivo].arraySubmenus"
-        v-bind:key="index"
         :class="{ activo: index == indexSubmenuActivo }"
-        class="btn btn-secondary border border-1 rounded botonesSubmenus menusColorIvan"
+        class="btn btn-secondary border border-1 rounded botonesSubmenus menusColorIvan w-100"
         @click="setIndexSubmenu(index)"
       >
         {{ item.nombre }}
@@ -58,8 +61,8 @@ export default {
   font-size: 16.4px;
   height: 50px;
   font-weight: bold;
-  max-width: 9.24rem;
-  min-width: 9.24rem;
+  // max-width: 9.24rem;
+  // min-width: 9.24rem;
   max-height: 2.8rem;
   min-height: 2.8rem;
 }

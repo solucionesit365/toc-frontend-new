@@ -1,6 +1,10 @@
 <template>
   <template v-for="(columna, index) in 6" v-bind:key="index">
-    <div v-if="arrayTeclas && arrayTeclas.length > 0" class="row mt-1">
+    <div
+      v-if="arrayTeclas && arrayTeclas.length > 0"
+      class="row"
+      :class="{ 'mt-1': index == 0 }"
+    >
       <div
         class="col colJuntitas"
         v-for="(linea, indexX) in 6"
@@ -146,14 +150,14 @@ export default {
 .teclas {
   height: 70px;
   font-size: 0.9rem;
-  min-width: 13.6rem;
-  max-width: 13.6rem;
+  min-width: 13.9rem;
+  max-width: 13.9rem;
   max-height: 4rem;
   min-height: 4rem;
 }
 .colJuntitas {
   /* padding-right: 0px; */
-  padding: 2px;
+  padding: 1px 0px 1px 0px;
 }
 
 .esconderTexto {
