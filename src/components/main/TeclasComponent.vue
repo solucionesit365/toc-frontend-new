@@ -6,13 +6,25 @@
       :class="{ 'mt-1': index == 0 }"
     >
       <div
-        class="col colJuntitas"
+        class="col"
+        :class="[
+          teclado[indexMenuActivo].arraySubmenus &&
+          teclado[indexMenuActivo].arraySubmenus.length > 0
+            ? 'colJuntitasConSubmenus'
+            : 'colJuntitas',
+        ]"
         v-for="(linea, indexX) in 6"
         v-bind:key="indexX"
       >
         <button
           v-if="arrayTeclas[indexX + 6 * index].idArticle"
-          class="btn btn-primary w-100 teclas d-inline-block esconderTexto"
+          class="btn btn-primary w-100 d-inline-block esconderTexto"
+          :class="[
+            teclado[indexMenuActivo].arraySubmenus &&
+            teclado[indexMenuActivo].arraySubmenus.length > 0
+              ? 'teclasConSubmenu'
+              : 'teclas',
+          ]"
           :style="{
             'background-color':
               '#' + arrayTeclas[indexX + 6 * index].color.toString(16),
@@ -23,7 +35,15 @@
         >
           {{ arrayTeclas[indexX + 6 * index].nombreArticulo }}
         </button>
-        <button v-else class="btn btn-primary w-100 teclas invisible">
+        <button
+          v-else
+          class="btn btn-primary w-100 invisible"
+          :class="[
+            teclado[indexMenuActivo].arraySubmenus == null
+              ? 'teclas'
+              : 'teclasConSubmenu',
+          ]"
+        >
           VACÍO
         </button>
       </div>
@@ -139,6 +159,7 @@ export default {
 
     return {
       teclado,
+      indexMenuActivo,
       arrayTeclas,
       getTextColor,
     };
@@ -147,16 +168,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.teclasConSubmenu {
+  height: 70px;
+  font-size: 0.9rem;
+  min-width: 13.99rem;
+  max-width: 14.1rem;
+  max-height: 4.04rem;
+  min-height: 4.04rem;
+}
 .teclas {
   height: 70px;
   font-size: 0.9rem;
   min-width: 13.9rem;
   max-width: 13.9rem;
-  max-height: 4rem;
-  min-height: 4rem;
+  max-height: 4.3rem;
+  min-height: 4.3rem;
 }
 .colJuntitas {
-  /* padding-right: 0px; */
+  padding: 3px 0px 3px 0px;
+}
+.colJuntitasConSubmenus {
   padding: 1px 0px 1px 0px;
 }
 

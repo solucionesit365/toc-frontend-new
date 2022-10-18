@@ -1,44 +1,64 @@
 <template>
-  <div
-    class="table-responsive estiloCesta section"
-    style="height: 26vh !important"
-    v-if="listaAlReves"
-  >
-    <table class="table colorFuente" id="job-table">
-      <thead style="background-color: red">
-        <tr>
-          <th scope="col">Productos</th>
-          <th scope="col">Unidades</th>
-          <th scope="col">Precio</th>
-        </tr>
-      </thead>
-      <tbody class="tableBody" :style="conCliente">
+  <div class="table-responsive section divCesta" v-if="listaAlReves">
+    <table class="table colorFuente">
+      <tbody class="tableBody">
         <tr
           v-for="(item, index) of listaAlReves"
           :key="index"
+          class="itemCesta"
           v-bind:class="{
-            estiloPromo: item.promocion.esPromo,
+            estiloPromo: item.promocion,
             seleccionado: activo === index,
           }"
         >
-          <td>Coca Cola Zero</td>
-          <td>2</td>
-          <td>3.50</td>
+          <td>
+            <span
+              class="d-inline-block text-truncate"
+              style="max-width: 21rem; min-width: 21rem"
+              >{{ item.nombre }}</span
+            >
+            <span class="xUnidades ms-2"> x{{ item.unidades }}</span>
+          </td>
+          <td>{{ item.subtotal.toFixed(2) }} €</td>
         </tr>
       </tbody>
     </table>
   </div>
   <div v-else>
-    <button class="btn btn-primary btn-lg">Inicializar cesta</button>
+    <MDBCard>
+      <MDBCardBody>
+        <MDBCardTitle>Cesta no inicializada</MDBCardTitle>
+        <MDBCardText>
+          En este momento no hay ninguna cesta seleccionada para
+          <span class="fw-bold">{{
+            arrayTrabajadores[indexTrabajadorActivo].nombre
+          }}</span>
+        </MDBCardText>
+        <MDBBtn color="primary">Crear nueva cesta</MDBBtn>
+      </MDBCardBody>
+    </MDBCard>
   </div>
 </template>
 
 <script>
 import store from "@/store";
 import { computed } from "vue";
-
+import {
+  MDBCard,
+  MDBCardBody,
+  MDBCardTitle,
+  MDBCardText,
+  MDBBtn,
+} from "mdb-vue-ui-kit";
 export default {
   name: "CestaComponent",
+  components: {
+    MDBCard,
+    MDBCardBody,
+    MDBCardTitle,
+    MDBCardText,
+    MDBBtn,
+  },
   setup() {
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
     const arrayTrabajadores = computed(
@@ -52,15 +72,16 @@ export default {
         for (let i = 0; i < arrayCestas.value.length; i++) {
           if (
             arrayCestas.value[i]._id ==
-            arrayTrabajadores.value[indexTrabajadorActivo.value]
+            arrayTrabajadores.value[indexTrabajadorActivo.value].idCesta
           ) {
             return arrayCestas.value[i];
           }
         }
       }
+
       return null;
     });
-
+    console.log("la cesta es: ", cesta.value);
     const listaAlReves = computed(() => {
       let aux = null;
       if (cesta.value && cesta.value.lista) {
@@ -74,6 +95,8 @@ export default {
 
     return {
       listaAlReves,
+      arrayTrabajadores,
+      indexTrabajadorActivo,
     };
   },
 };
@@ -85,5 +108,20 @@ export default {
 }
 .colorFuente {
   color: #606060 !important;
+}
+.divCesta {
+  background-color: white;
+  height: 15.6rem !important;
+}
+.tableBody {
+  font-size: 1.3rem;
+}
+.xUnidades {
+  display: inline-block !important;
+  vertical-align: top;
+  font-weight: bold;
+}
+.itemCesta {
+  line-height: 22px;
 }
 </style>
