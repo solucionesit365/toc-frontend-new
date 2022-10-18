@@ -9,7 +9,7 @@
     "start": "vue-cli-service serve --open"
   },
   "dependencies": {
-    "autoprefixer": "^10.4.12",
+    "autoprefixer": "10.4.5",
     "axios": "^1.1.2",
     "core-js": "^3.8.3",
     "mdb-vue-ui-kit": "./mdb/mdb-vue-ui-kit-3.0.0.tgz",
