@@ -60,8 +60,8 @@ export default {
   font-weight: bold;
   max-width: 9.24rem;
   min-width: 9.24rem;
-  // max-height: 4rem;
-  // min-height: 4rem;
+  max-height: 2.8rem;
+  min-height: 2.8rem;
 }
 
 .activo {

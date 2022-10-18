@@ -1,94 +1,26 @@
 <template>
-  <template v-for="(linea, index) in 5" v-bind:key="index">
+  <template v-for="(columna, index) in 6" v-bind:key="index">
     <div v-if="arrayTeclas && arrayTeclas.length > 0" class="row mt-1">
-      <div class="col colJuntitas">
+      <div
+        class="col colJuntitas"
+        v-for="(linea, indexX) in 6"
+        v-bind:key="indexX"
+      >
         <button
-          v-if="arrayTeclas[0 + 6 * index].idArticle"
-          class="btn btn-primary w-100 teclas"
+          v-if="arrayTeclas[indexX + 6 * index].idArticle"
+          class="btn btn-primary w-100 teclas d-inline-block esconderTexto"
           :style="{
             'background-color':
-              '#' + arrayTeclas[0 + 6 * index].color.toString(16),
+              '#' + arrayTeclas[indexX + 6 * index].color.toString(16),
             color: getTextColor(
-              '#' + arrayTeclas[0 + 6 * index].color.toString(16)
+              '#' + arrayTeclas[indexX + 6 * index].color.toString(16)
             ),
           }"
         >
-          {{ arrayTeclas[0 + 6 * index].nombreArticulo }}
+          {{ arrayTeclas[indexX + 6 * index].nombreArticulo }}
         </button>
-      </div>
-      <div class="col colJuntitas">
-        <button
-          v-if="arrayTeclas[1 + 6 * index].idArticle"
-          class="btn btn-primary w-100 teclas"
-          :style="{
-            'background-color':
-              '#' + arrayTeclas[1 + 6 * index].color.toString(16),
-            color: getTextColor(
-              '#' + arrayTeclas[1 + 6 * index].color.toString(16)
-            ),
-          }"
-        >
-          {{ arrayTeclas[1 + 6 * index].nombreArticulo }}
-        </button>
-      </div>
-      <div class="col colJuntitas">
-        <button
-          v-if="arrayTeclas[2 + 6 * index].idArticle"
-          class="btn btn-primary w-100 teclas"
-          :style="{
-            'background-color':
-              '#' + arrayTeclas[2 + 6 * index].color.toString(16),
-            color: getTextColor(
-              '#' + arrayTeclas[2 + 6 * index].color.toString(16)
-            ),
-          }"
-        >
-          {{ arrayTeclas[2 + 6 * index].nombreArticulo }}
-        </button>
-      </div>
-      <div class="col colJuntitas">
-        <button
-          v-if="arrayTeclas[3 + 6 * index].idArticle"
-          class="btn btn-primary w-100 teclas"
-          :style="{
-            'background-color':
-              '#' + arrayTeclas[3 + 6 * index].color.toString(16),
-            color: getTextColor(
-              '#' + arrayTeclas[3 + 6 * index].color.toString(16)
-            ),
-          }"
-        >
-          {{ arrayTeclas[3 + 6 * index].nombreArticulo }}
-        </button>
-      </div>
-      <div class="col colJuntitas">
-        <button
-          v-if="arrayTeclas[4 + 6 * index].idArticle"
-          class="btn btn-primary w-100 teclas"
-          :style="{
-            'background-color':
-              '#' + arrayTeclas[4 + 6 * index].color.toString(16),
-            color: getTextColor(
-              '#' + arrayTeclas[4 + 6 * index].color.toString(16)
-            ),
-          }"
-        >
-          {{ arrayTeclas[4 + 6 * index].nombreArticulo }}
-        </button>
-      </div>
-      <div class="col colJuntitas">
-        <button
-          v-if="arrayTeclas[5 + 6 * index].idArticle"
-          class="btn btn-primary w-100 teclas"
-          :style="{
-            'background-color':
-              '#' + arrayTeclas[5 + 6 * index].color.toString(16),
-            color: getTextColor(
-              '#' + arrayTeclas[5 + 6 * index].color.toString(16)
-            ),
-          }"
-        >
-          {{ arrayTeclas[5 + 6 * index].nombreArticulo }}
+        <button v-else class="btn btn-primary w-100 teclas invisible">
+          VACÍO
         </button>
       </div>
     </div>
@@ -216,10 +148,16 @@ export default {
   font-size: 0.9rem;
   min-width: 13.6rem;
   max-width: 13.6rem;
-  max-height: 5rem;
+  max-height: 4rem;
+  min-height: 4rem;
 }
 .colJuntitas {
   /* padding-right: 0px; */
   padding: 2px;
+}
+
+.esconderTexto {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

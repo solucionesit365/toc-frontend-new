@@ -51,13 +51,13 @@ export default {
   color: #c95907;
   border-color: #bf5c18 !important;
   margin-right: 4px;
-  font-size: 18px;
-  height: 70px;
+  font-size: 0.92rem;
+  height: 60px;
   font-weight: bold;
   max-width: 9.24rem;
   min-width: 9.24rem;
-  // max-height: 4rem;
-  // min-height: 4rem;
+  max-height: 3.7rem;
+  min-height: 3.7rem;
 }
 
 .activo {
