@@ -215,7 +215,7 @@ export default {
   height: 70px;
   font-size: 0.9rem;
   min-width: 13.99rem;
-  max-width: 14.1rem;
+  max-width: 13.99rem;
   max-height: 4.04rem;
   min-height: 4.04rem;
 }
