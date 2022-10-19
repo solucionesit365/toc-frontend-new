@@ -16,11 +16,12 @@
 
 <script>
 import { computed, onMounted } from "vue";
-import store from "@/store";
+import { useStore } from "vuex";
 
 export default {
   name: "MenusComponent",
   setup(_props, { expose }) {
+    const store = useStore();
     const teclado = computed(() => store.state.Teclado.objTeclado);
     const indexMenuActivo = computed(() => store.state.Teclado.indexMenuActivo);
 

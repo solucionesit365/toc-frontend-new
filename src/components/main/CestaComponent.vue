@@ -6,6 +6,7 @@
           v-for="(item, index) of cesta.lista"
           :key="index"
           class="itemCesta"
+          @click="clickItem(index)"
           v-bind:class="{
             estiloPromo: item.promocion,
             seleccionado: indexItemCestaActivo === index,
@@ -41,7 +42,6 @@
 </template>
 
 <script>
-import store from "@/store";
 import { computed } from "vue";
 import {
   MDBCard,
@@ -50,6 +50,7 @@ import {
   MDBCardText,
   MDBBtn,
 } from "mdb-vue-ui-kit";
+import { useStore } from "vuex";
 export default {
   name: "CestaComponent",
   components: {
@@ -60,6 +61,7 @@ export default {
     MDBBtn,
   },
   setup() {
+    const store = useStore();
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
     const indexItemCestaActivo = computed(
       () => store.state.Cestas.indexItemActivo
@@ -85,11 +87,16 @@ export default {
       return null;
     });
 
+    function clickItem(index) {
+      store.dispatch("Cestas/setActivoAction", index);
+    }
+
     return {
       cesta,
       arrayTrabajadores,
       indexTrabajadorActivo,
       indexItemCestaActivo,
+      clickItem,
     };
   },
 };

@@ -26,12 +26,13 @@
 </template>
 
 <script>
-import store from "@/store";
 import { computed } from "vue";
+import { useStore } from "vuex";
 
 export default {
   name: "SubmenusComponent",
   setup() {
+    const store = useStore();
     const teclado = computed(() => store.state.Teclado.objTeclado);
     const indexMenuActivo = computed(() => store.state.Teclado.indexMenuActivo);
     const indexSubmenuActivo = computed(

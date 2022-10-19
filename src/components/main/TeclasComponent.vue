@@ -54,17 +54,18 @@
 </template>
 
 <script>
-import store from "@/store";
 import { computed, provide, ref } from "vue";
 import PesoComponent from "./PesoComponent.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useStore } from "vuex";
 export default {
   name: "TeclasComponent",
   components: {
     PesoComponent,
   },
   setup() {
+    const store = useStore();
     const teclado = computed(() => store.state.Teclado.objTeclado);
     const indexMenuActivo = computed(() => store.state.Teclado.indexMenuActivo);
     const indexSubmenuActivo = computed(
