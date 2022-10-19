@@ -1,9 +1,9 @@
 <template>
-  <div class="table-responsive section divCesta" v-if="listaAlReves">
+  <div class="table-responsive divCesta reverso" v-if="cesta && cesta.lista">
     <table class="table colorFuente">
       <tbody class="tableBody">
         <tr
-          v-for="(item, index) of listaAlReves"
+          v-for="(item, index) of cesta.lista"
           :key="index"
           class="itemCesta"
           v-bind:class="{
@@ -84,20 +84,9 @@ export default {
 
       return null;
     });
-    console.log("la cesta es: ", cesta.value);
-    const listaAlReves = computed(() => {
-      let aux = null;
-      if (cesta.value && cesta.value.lista) {
-        aux = cesta.value.lista;
-        return aux.reverse();
-      }
-      return null;
-    });
-
-    console.log(arrayTrabajadores.value[indexTrabajadorActivo.value]);
 
     return {
-      listaAlReves,
+      cesta,
       arrayTrabajadores,
       indexTrabajadorActivo,
       indexItemCestaActivo,
@@ -127,5 +116,9 @@ export default {
 }
 .itemCesta {
   line-height: 22px;
+}
+.reverso {
+  display: flex;
+  flex-direction: column-reverse;
 }
 </style>

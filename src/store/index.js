@@ -3,7 +3,7 @@ import Trabajadores from "./Trabajadores";
 import Cestas from "./Cestas";
 import Caja from "./Caja";
 import Teclado from "./Teclado";
-
+import Configuracion from "./Configuracion";
 export default createStore({
   state: {},
   getters: {},
@@ -14,5 +14,6 @@ export default createStore({
     Cestas,
     Trabajadores,
     Teclado,
+    Configuracion,
   },
 });

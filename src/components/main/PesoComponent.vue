@@ -16,7 +16,6 @@
         <MDBInput
           v-if="numpadRef && numpadRef.gramos"
           v-model="numpadRef.gramos"
-          disabled
         />
       </div>
       <div class="row">
@@ -59,6 +58,7 @@ export default {
   setup(_props, { expose }) {
     const modalPeso = ref(false);
     const numpadRef = ref(null);
+    const infoArticulo = ref(null);
 
     function abrirModal() {
       modalPeso.value = true;
@@ -81,6 +81,7 @@ export default {
     return {
       modalPeso,
       numpadRef,
+      infoArticulo,
       test,
     };
   },

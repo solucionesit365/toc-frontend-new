@@ -18,7 +18,7 @@
       >
         <button
           v-if="arrayTeclas[indexX + 6 * index].idArticle"
-          @click="clickTecla()"
+          @click="clickTecla(arrayTeclas[indexX + 6 * index])"
           class="btn btn-primary w-100 d-inline-block esconderTexto"
           :class="[
             teclado[indexMenuActivo].arraySubmenus &&
@@ -57,6 +57,8 @@
 import store from "@/store";
 import { computed, provide, ref } from "vue";
 import PesoComponent from "./PesoComponent.vue";
+import axios from "axios";
+import Swal from "sweetalert2";
 export default {
   name: "TeclasComponent",
   components: {
@@ -69,6 +71,7 @@ export default {
       () => store.state.Teclado.indexSubmenuActivo
     );
     const modalPesoRef = ref(null);
+    const unidadesAplicar = ref(1);
 
     function generarTecladoVacio() {
       let auxArray = [];
@@ -84,8 +87,28 @@ export default {
       return auxArray;
     }
 
-    function clickTecla() {
-      modalPesoRef.value.abrirModal();
+    async function clickTecla(item) {
+      try {
+        if (item.esSumable) {
+          if (store.getters["Configuracion/suplementosActivos"]) {
+            console.log("COMPROBAR SI TIENE SUPLEMENTOS");
+          } else {
+            const resClick = await axios.post("teclado/clickTeclaArticulo", {
+              idArticulo: item.idArticle,
+              gramos: 0,
+              idCesta: store.getters["Cestas/getIdCestaActiva"],
+              unidades: unidadesAplicar.value,
+              arraySuplementos: null,
+            });
+            if (!resClick.data)
+              throw Error("No se ha podido añadir el artículo a la cesta");
+          }
+        } else {
+          modalPesoRef.value.abrirModal();
+        }
+      } catch (err) {
+        Swal.fire("Oops...", err.message, "error");
+      }
     }
 
     const arrayTeclas = computed(() => {
@@ -168,8 +191,8 @@ export default {
       return whiteContrast > blackContrast ? "#ffffff" : "#000000";
     }
 
-    function addItem() {
-      console.log("QUE PASA WEY");
+    function addItem(item) {
+      console.log(item);
     }
 
     provide("addItem", addItem);
