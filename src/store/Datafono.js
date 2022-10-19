@@ -1,7 +1,7 @@
 export default {
   namespaced: true,
   state: {
-    enUso: true,
+    enUso: false,
   },
   mutations: {
     setEnUsoMutation(state, payload) {

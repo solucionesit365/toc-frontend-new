@@ -8,14 +8,6 @@
     <MDBBtn v-if="!datafonoEnUso" outline="primary" class="botonEstado">
       <span class="disponible">Datáfono disponible</span>
     </MDBBtn>
-    <!-- <MDBBtn v-else outline="primary" class="botonEstado">
-      <img
-        src="pay-loading.svg"
-        alt="Procesando pago"
-        width="200"
-        height="50"
-      />
-    </MDBBtn> -->
     <img
       v-else
       src="pay-loading.svg"
@@ -24,10 +16,15 @@
       height="60"
     />
   </div>
-  <div class="row mt-2">
+  <div class="row mt-1">
     <MDBBtn outline="primary" class="botonPagar">
       <MDBIcon icon="hand-holding-usd" size="5x" />
-      <span class="letraTotal ms-3 mt-2"> 2,56 € </span></MDBBtn
+      <span class="letraTotal ms-3 mt-2">
+        {{ total.toFixed(2) }} €
+      </span></MDBBtn
+    >
+    <span class="text-end fst-italic informacion"
+      >Tienda (t-000) Empresa (Tena) Versión (4.0)</span
     >
   </div>
 </template>
@@ -47,6 +44,8 @@ export default {
     const arrayTrabajadores = computed(
       () => store.state.Trabajadores.arrayTrabajadores
     );
+    const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
+    const idCestaActiva = computed(() => store.state.Cestas.idCestaActiva);
     const indexTrabajadorActivo = computed(
       () => store.state.Trabajadores.indexActivo
     );
@@ -62,10 +61,25 @@ export default {
       }
       return null;
     });
+    const total = computed(() => {
+      if (arrayCestas.value && idCestaActiva.value) {
+        for (let i = 0; i < arrayCestas.value.length; i++) {
+          if (arrayCestas.value[i]._id === idCestaActiva.value) {
+            return (
+              arrayCestas.value[i].detalleIva.importe1 +
+              arrayCestas.value[i].detalleIva.importe2 +
+              arrayCestas.value[i].detalleIva.importe3
+            );
+          }
+        }
+      }
+      return null;
+    });
 
     return {
       trabajadorActivo,
       datafonoEnUso,
+      total,
     };
   },
 };
@@ -93,10 +107,10 @@ $altoBotonEstado: 3.5rem;
   max-height: $altoBotonEstado;
 }
 .letraTotal {
-  font-size: 1.5rem;
+  font-size: 3.5rem;
   font-weight: bold;
-  display: inline-block !important;
-  vertical-align: top;
+  // display: inline-block !important;
+  // vertical-align: top;
 }
 .disponible {
   color: #00c919;
@@ -106,5 +120,8 @@ $altoBotonEstado: 3.5rem;
 .fotoProcesandoPago {
   display: inline-block !important;
   vertical-align: top;
+}
+.informacion {
+  font-size: 1rem;
 }
 </style>
