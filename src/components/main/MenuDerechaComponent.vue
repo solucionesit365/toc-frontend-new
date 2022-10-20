@@ -19,8 +19,8 @@
   <div class="row mt-1">
     <MDBBtn outline="primary" class="botonPagar">
       <MDBIcon icon="hand-holding-usd" size="5x" />
-      <span v-if="total" class="letraTotal ms-3 mt-2">
-        {{ total.toFixed(2) }} €
+      <span v-if="cesta" class="letraTotal ms-3 mt-2">
+        {{ getTotal(cesta).toFixed(2) }} €
       </span></MDBBtn
     >
     <span class="text-end fst-italic informacion"
@@ -45,7 +45,6 @@ export default {
       () => store.state.Trabajadores.arrayTrabajadores
     );
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
-    const idCestaActiva = computed(() => store.state.Cestas.idCestaActiva);
     const indexTrabajadorActivo = computed(
       () => store.state.Trabajadores.indexActivo
     );
@@ -61,29 +60,34 @@ export default {
       }
       return null;
     });
-    const total = computed(() => {
-      if (
-        arrayCestas.value &&
-        arrayCestas.value.length > 0 &&
-        idCestaActiva.value
-      ) {
+
+    const cesta = computed(() => {
+      if (arrayCestas.value) {
         for (let i = 0; i < arrayCestas.value.length; i++) {
-          if (arrayCestas.value[i]._id === idCestaActiva.value) {
-            return (
-              arrayCestas.value[i].detalleIva.importe1 +
-              arrayCestas.value[i].detalleIva.importe2 +
-              arrayCestas.value[i].detalleIva.importe3
-            );
+          if (
+            arrayCestas.value[i]._id ==
+            arrayTrabajadores.value[indexTrabajadorActivo.value].idCesta
+          ) {
+            return arrayCestas.value[i];
           }
         }
       }
       return null;
     });
 
+    function getTotal(cesta) {
+      return (
+        cesta.detalleIva.importe1 +
+        cesta.detalleIva.importe2 +
+        cesta.detalleIva.importe3
+      );
+    }
+
     return {
       trabajadorActivo,
       datafonoEnUso,
-      total,
+      cesta,
+      getTotal,
     };
   },
 };

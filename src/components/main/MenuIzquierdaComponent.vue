@@ -64,19 +64,29 @@ export default {
   setup() {
     const store = useStore();
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
-    const idCestaActiva = computed(() => store.state.Cestas.idCestaActiva);
+    const arrayTrabajadores = computed(
+      () => store.state.Trabajadores.arrayTrabajadores
+    );
     const indexActivoCesta = computed(() => store.state.Cestas.indexItemActivo);
+    const indexTrabajadorActivo = computed(
+      () => store.state.Trabajadores.indexActivo
+    );
+    const vistaCliente = ref(false);
+
     const cesta = computed(() => {
-      if (arrayCestas.value && idCestaActiva.value) {
+      if (arrayCestas.value) {
         for (let i = 0; i < arrayCestas.value.length; i++) {
-          if (arrayCestas.value[i]._id === idCestaActiva.value) {
+          if (
+            arrayCestas.value[i]._id ==
+            arrayTrabajadores.value[indexTrabajadorActivo.value].idCesta
+          ) {
             return arrayCestas.value[i];
           }
         }
       }
       return null;
     });
-    const vistaCliente = ref(false);
+
     function borrarItem() {
       store.dispatch("Cestas/deleteIndex", indexActivoCesta.value);
     }

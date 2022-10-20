@@ -1,11 +1,34 @@
 <template>
-  <div class="row mt-2">
+  <div
+    v-if="
+      arrayTrabajadores &&
+      indexActivoTrabajador != null &&
+      indexActivoTrabajador != undefined
+    "
+    class="row mt-2"
+  >
     <div class="col" v-for="(cesta, index) in arrayCestas" v-bind:key="index">
-      <MDBCard class="cesta mb-3">
+      <MDBCard
+        class="cesta mb-3"
+        :class="{
+          cestaActiva:
+            cesta._id === arrayTrabajadores[indexActivoTrabajador].idCesta,
+        }"
+      >
         <MDBCardBody>
           <MDBCardTitle>{{ cesta.modo }}</MDBCardTitle>
-          <MDBCardText> Total: {{ getTotal(cesta).toFixed(2) }} €</MDBCardText>
-          <MDBBtn color="primary" size="lg" class="w-100">Seleccionar</MDBBtn>
+          <MDBCardText>
+            <span style="font-size: 1.2rem"
+              >Total: {{ getTotal(cesta).toFixed(2) }} €</span
+            ></MDBCardText
+          >
+          <MDBBtn
+            color="primary"
+            size="lg"
+            class="w-100"
+            @click="seleccionar(cesta)"
+            >Seleccionar</MDBBtn
+          >
         </MDBCardBody>
       </MDBCard>
     </div>
@@ -39,6 +62,8 @@ import {
   MDBBtn,
 } from "mdb-vue-ui-kit";
 import router from "../router/index";
+import axios from "axios";
+import Swal from "sweetalert2";
 export default {
   name: "CestasView",
   components: {
@@ -52,6 +77,12 @@ export default {
     const store = useStore();
     const vistaMesas = ref(store.getters["Configuracion/mesasActivas"]);
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
+    const arrayTrabajadores = computed(
+      () => store.state.Trabajadores.arrayTrabajadores
+    );
+    const indexActivoTrabajador = computed(
+      () => store.state.Trabajadores.indexActivo
+    );
 
     function switchMesas() {
       if (vistaMesas.value) {
@@ -73,12 +104,36 @@ export default {
       );
     }
 
+    function seleccionar(cesta) {
+      if (
+        arrayTrabajadores.value &&
+        indexActivoTrabajador.value != undefined &&
+        indexActivoTrabajador.value != null &&
+        arrayTrabajadores.value[indexActivoTrabajador.value]
+      ) {
+        axios.post("cestas/cambiarCestaTrabajador", {
+          idCesta: cesta._id,
+          idTrabajador:
+            arrayTrabajadores.value[indexActivoTrabajador.value]._id,
+        });
+      } else {
+        Swal.fire(
+          "Oops...",
+          "Error, no se ha podido seleccionar la cesta para el trabajador",
+          "error"
+        );
+      }
+    }
+
     return {
       vistaMesas,
       switchMesas,
       arrayCestas,
+      arrayTrabajadores,
+      indexActivoTrabajador,
       volver,
       getTotal,
+      seleccionar,
     };
   },
 };
@@ -94,5 +149,8 @@ $anchoCesta: 20rem;
 .cesta {
   min-width: $anchoCesta;
   max-width: $anchoCesta;
+}
+.cestaActiva {
+  background-color: rgb(255, 221, 176);
 }
 </style>

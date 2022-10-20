@@ -11,7 +11,12 @@ socket.on("cargarTrabajadores", (arrayTrabajadores) => {
   try {
     if (arrayTrabajadores) {
       store.dispatch("Trabajadores/setArrayTrabajadores", arrayTrabajadores);
-      store.dispatch("Trabajadores/setIndexActivo", 0);
+      if (
+        store.getters["Trabajadores/getIndexActivo"] == null ||
+        store.getters["Trabajadores/getIndexActivo"] == undefined
+      ) {
+        store.dispatch("Trabajadores/setIndexActivo", 0);
+      }
     } else {
       throw Error("Error, arrayTrabajadores no es correcto");
     }
