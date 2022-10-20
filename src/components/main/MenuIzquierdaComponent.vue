@@ -22,7 +22,7 @@
     <MDBBtn outline="secondary" class="botones ms-1"
       ><MDBIcon icon="calculator" size="4x"
     /></MDBBtn>
-    <MDBBtn outline="secondary" class="botones ms-1"
+    <MDBBtn @click="goTo('/cestas')" outline="secondary" class="botones ms-1"
       ><MDBIcon icon="shopping-cart" size="4x"
     /></MDBBtn>
   </MDBBtnGroup>
@@ -53,6 +53,7 @@
 import { computed, ref } from "vue";
 import { MDBBtnGroup, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
+import router from "../../router/index";
 export default {
   name: "MenuIzquierdaComponent",
   components: {
@@ -92,6 +93,10 @@ export default {
       }
     }
 
+    function goTo(x) {
+      router.push(x);
+    }
+
     return {
       indexActivoCesta,
       borrarItem,
@@ -99,6 +104,7 @@ export default {
       vistaCliente,
       changeVistaCliente,
       cesta,
+      goTo,
     };
   },
 };

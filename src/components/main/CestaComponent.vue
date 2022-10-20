@@ -31,11 +31,15 @@
         <MDBCardTitle>Cesta no inicializada</MDBCardTitle>
         <MDBCardText>
           En este momento no hay ninguna cesta seleccionada para
-          <span class="fw-bold">{{
-            arrayTrabajadores[indexTrabajadorActivo].nombre
-          }}</span>
+          <span
+            v-if="arrayTrabajadores && arrayTrabajadores[indexTrabajadorActivo]"
+            class="fw-bold"
+            >{{ arrayTrabajadores[indexTrabajadorActivo].nombre }}</span
+          >
         </MDBCardText>
-        <MDBBtn color="primary">Crear nueva cesta</MDBBtn>
+        <MDBBtn color="primary" @click="inicializarCesta()"
+          >Crear nueva cesta</MDBBtn
+        >
       </MDBCardBody>
     </MDBCard>
   </div>
@@ -51,6 +55,8 @@ import {
   MDBBtn,
 } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
+import Swal from "sweetalert2";
+import axios from "axios";
 export default {
   name: "CestaComponent",
   components: {
@@ -83,9 +89,43 @@ export default {
           }
         }
       }
-
       return null;
     });
+
+    function inicializarCesta() {
+      if (
+        arrayTrabajadores.value &&
+        indexTrabajadorActivo.value != undefined &&
+        indexTrabajadorActivo.value != null &&
+        arrayTrabajadores.value[indexTrabajadorActivo.value]
+      ) {
+        axios
+          .post("cestas/crearCesta", {
+            idTrabajador:
+              arrayTrabajadores.value[indexTrabajadorActivo.value]._id,
+          })
+          .then((resCrearCesta) => {
+            if (!resCrearCesta.data) {
+              throw Error("No se ha podido inicializar la nueva cesta");
+            }
+          })
+          .catch((err) => {
+            Swal.fire("Oops...", err.message, "error");
+          });
+      } else if (
+        !arrayTrabajadores.value ||
+        indexTrabajadorActivo.value == undefined ||
+        indexTrabajadorActivo.value == null
+      ) {
+        Swal.fire(
+          "Oops...",
+          "Error, no hay trabajador activo. Es necesario fichar antes de realizar esta acción",
+          "error"
+        );
+      } else {
+        Swal.fire("Oops...", "Error desconocido #123", "error");
+      }
+    }
 
     function clickItem(index) {
       store.dispatch("Cestas/setActivoAction", index);
@@ -97,6 +137,7 @@ export default {
       indexTrabajadorActivo,
       indexItemCestaActivo,
       clickItem,
+      inicializarCesta,
     };
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <span class="nombreTrabajador text-center">{{
+    <span v-if="trabajadorActivo" class="nombreTrabajador text-center">{{
       trabajadorActivo.nombreCorto
     }}</span>
   </div>
@@ -19,7 +19,7 @@
   <div class="row mt-1">
     <MDBBtn outline="primary" class="botonPagar">
       <MDBIcon icon="hand-holding-usd" size="5x" />
-      <span class="letraTotal ms-3 mt-2">
+      <span v-if="total" class="letraTotal ms-3 mt-2">
         {{ total.toFixed(2) }} €
       </span></MDBBtn
     >
@@ -62,7 +62,11 @@ export default {
       return null;
     });
     const total = computed(() => {
-      if (arrayCestas.value && idCestaActiva.value) {
+      if (
+        arrayCestas.value &&
+        arrayCestas.value.length > 0 &&
+        idCestaActiva.value
+      ) {
         for (let i = 0; i < arrayCestas.value.length; i++) {
           if (arrayCestas.value[i]._id === idCestaActiva.value) {
             return (

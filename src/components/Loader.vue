@@ -22,10 +22,10 @@ export default {
   name: "LoaderComponent",
   setup() {
     setTimeout(function () {
-      tocGame.cargarTrabajadoresFichados();
       tocGame.cargarCestas();
       tocGame.cargarVentas();
       tocGame.cargarTeclado();
+      tocGame.cargarTrabajadoresFichados();
       tocGame.iniciarToc();
     }, 5000);
     return {};
