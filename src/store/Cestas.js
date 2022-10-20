@@ -14,7 +14,7 @@ export default {
       state.indexItemActivo = payload;
     },
 
-    deleteIndexMutation(state, index, idCesta) {
+    deleteIndexMutation(state, { index, idCesta }) {
       axios
         .post("cestas/borrarItemCesta", {
           idCesta,
@@ -56,11 +56,11 @@ export default {
     setArrayCestasAction({ commit }, payload) {
       commit("setArrayCestasMutation", payload);
     },
-    deleteIndex({ commit }, index, idCesta) {
-      commit("deleteIndexMutation", index, idCesta);
+    deleteIndex({ commit }, { index, idCesta }) {
+      commit("deleteIndexMutation", { index, idCesta });
     },
-    deleteLista({ commit }) {
-      commit("deleteListaMutation");
+    deleteLista({ commit }, idCesta) {
+      commit("deleteListaMutation", idCesta);
     },
   },
 };

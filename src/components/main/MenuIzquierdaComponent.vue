@@ -88,11 +88,19 @@ export default {
     });
 
     function borrarItem() {
-      store.dispatch("Cestas/deleteIndex", indexActivoCesta.value);
+      if (
+        indexActivoCesta.value != null &&
+        indexActivoCesta.value != undefined &&
+        cesta.value
+      )
+        store.dispatch("Cestas/deleteIndex", {
+          index: indexActivoCesta.value,
+          idCesta: cesta.value._id,
+        });
     }
 
     function borrarLista() {
-      store.dispatch("Cestas/deleteLista");
+      if (cesta.value) store.dispatch("Cestas/deleteLista", cesta.value._id);
     }
 
     function changeVistaCliente() {

@@ -68,11 +68,32 @@ export default {
     const store = useStore();
     const teclado = computed(() => store.state.Teclado.objTeclado);
     const indexMenuActivo = computed(() => store.state.Teclado.indexMenuActivo);
+    const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
+    const arrayTrabajadores = computed(
+      () => store.state.Trabajadores.arrayTrabajadores
+    );
+    const indexTrabajadorActivo = computed(
+      () => store.state.Trabajadores.indexActivo
+    );
     const indexSubmenuActivo = computed(
       () => store.state.Teclado.indexSubmenuActivo
     );
     const modalPesoRef = ref(null);
     const unidadesAplicar = ref(1);
+
+    const cesta = computed(() => {
+      if (arrayCestas.value) {
+        for (let i = 0; i < arrayCestas.value.length; i++) {
+          if (
+            arrayCestas.value[i]._id ==
+            arrayTrabajadores.value[indexTrabajadorActivo.value].idCesta
+          ) {
+            return arrayCestas.value[i];
+          }
+        }
+      }
+      return null;
+    });
 
     function generarTecladoVacio() {
       let auxArray = [];
@@ -90,6 +111,9 @@ export default {
 
     async function clickTecla(item) {
       try {
+        if (!cesta.value)
+          throw Error("Es necesario una cesta activa para añadir un artículo");
+
         if (item.esSumable) {
           if (store.getters["Configuracion/suplementosActivos"]) {
             console.log("COMPROBAR SI TIENE SUPLEMENTOS");
@@ -97,7 +121,7 @@ export default {
             const resClick = await axios.post("teclado/clickTeclaArticulo", {
               idArticulo: item.idArticle,
               gramos: 0,
-              idCesta: store.getters["Cestas/getIdCestaActiva"],
+              idCesta: cesta.value._id,
               unidades: unidadesAplicar.value,
               arraySuplementos: null,
             });
