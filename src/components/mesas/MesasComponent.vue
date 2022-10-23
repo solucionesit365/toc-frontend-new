@@ -5,8 +5,12 @@
         class="mesa ms-2"
         v-for="(_mesa, index) in 10"
         v-bind:key="index"
+        @click="setIndexActivo(index + y * 10)"
         :class="[
           index === 0 ? 'ms-5' : '',
+          index + y * 10 === indexMesaActiva
+            ? 'border border-4 border-dark'
+            : '',
           arrayMesas[index + y * 10].nombre ? 'habilitada' : 'deshabilitada',
         ]"
       >
@@ -14,17 +18,153 @@
       </div>
     </div>
   </template>
+
+  <div class="position-relative footer">
+    <div class="position-absolute bottom-0 start-0">
+      <button
+        @click="volver()"
+        class="btn btn-warning ms-2"
+        style="font-size: 27px"
+      >
+        Volver
+      </button>
+      <button
+        @click="switchMesas()"
+        class="btn btn-primary ms-2"
+        style="font-size: 27px"
+      >
+        Vista mesas
+      </button>
+    </div>
+    <div class="position-absolute bottom-0 end-0">
+      <button
+        v-if="
+          arrayMesas &&
+          indexMesaActiva != null &&
+          indexMesaActiva != undefined &&
+          arrayMesas[indexMesaActiva] &&
+          arrayMesas[indexMesaActiva].nombre
+        "
+        @click="desactivarMesa()"
+        class="btn btn-danger ms-2"
+        style="font-size: 27px"
+      >
+        Eliminar mesa
+      </button>
+      <button
+        v-else
+        @click="activarMesa()"
+        class="btn btn-success ms-2"
+        style="font-size: 27px"
+      >
+        Activar mesa
+      </button>
+      <button
+        v-if="
+          arrayMesas &&
+          indexMesaActiva != null &&
+          indexMesaActiva != undefined &&
+          arrayMesas[indexMesaActiva] &&
+          arrayMesas[indexMesaActiva].nombre
+        "
+        @click="modalNombreMesa = true"
+        class="btn btn-info ms-2"
+        style="font-size: 27px"
+      >
+        Cambiar nombre
+      </button>
+    </div>
+  </div>
+  <MDBModal id="modalNombreMesa" tabindex="-1" v-model="modalNombreMesa">
+    <MDBModalBody>
+      <MDBInput
+        label="Introduce el nombre de la mesa"
+        size="lg"
+        v-model="inputNombre"
+      />
+    </MDBModalBody>
+    <MDBModalFooter>
+      <MDBBtn color="secondary" size="lg" @click="modalNombreMesa = false"
+        >Cerrar</MDBBtn
+      >
+      <MDBBtn color="primary" size="lg" @click="cambiarNombre()"
+        >Guardar cambios</MDBBtn
+      >
+    </MDBModalFooter>
+  </MDBModal>
 </template>
 
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
-import { onMounted, ref } from "vue";
-
+import { onMounted, ref, inject } from "vue";
+import {
+  MDBModal,
+  MDBModalBody,
+  MDBModalFooter,
+  MDBBtn,
+  MDBInput,
+} from "mdb-vue-ui-kit";
 export default {
   name: "MesasComponent",
+  components: {
+    MDBModal,
+    MDBModalBody,
+    MDBModalFooter,
+    MDBBtn,
+    MDBInput,
+  },
   setup() {
     const arrayMesas = ref([]);
+    const indexMesaActiva = ref(0);
+    const modalNombreMesa = ref(null);
+    const inputNombre = ref("");
+    function setIndexActivo(x) {
+      indexMesaActiva.value = x;
+    }
+
+    function activarMesa() {
+      if (
+        arrayMesas.value &&
+        indexMesaActiva.value != null &&
+        indexMesaActiva.value != undefined &&
+        arrayMesas.value[indexMesaActiva.value]
+      ) {
+        arrayMesas.value[indexMesaActiva.value] = {
+          nombre: "Mesa " + (indexMesaActiva.value + 1),
+        };
+      }
+    }
+
+    function desactivarMesa() {
+      if (
+        arrayMesas.value &&
+        indexMesaActiva.value != null &&
+        indexMesaActiva.value != undefined &&
+        arrayMesas.value[indexMesaActiva.value]
+      ) {
+        arrayMesas.value[indexMesaActiva.value] = {
+          nombre: null,
+          color: null,
+          _id: null,
+        };
+      }
+    }
+
+    function cambiarNombre() {
+      if (
+        arrayMesas.value &&
+        indexMesaActiva.value != null &&
+        indexMesaActiva.value != undefined &&
+        arrayMesas.value[indexMesaActiva.value]
+      ) {
+        arrayMesas.value[indexMesaActiva.value].nombre = inputNombre.value;
+        modalNombreMesa.value = false;
+      }
+    }
+
+    const volver = inject("volver");
+    const switchMesas = inject("switchMesas");
 
     onMounted(() => {
       axios
@@ -39,6 +179,15 @@ export default {
     });
     return {
       arrayMesas,
+      indexMesaActiva,
+      setIndexActivo,
+      volver,
+      switchMesas,
+      activarMesa,
+      desactivarMesa,
+      cambiarNombre,
+      modalNombreMesa,
+      inputNombre,
     };
   },
 };
@@ -47,6 +196,7 @@ export default {
 <style lang="scss" scoped>
 $anchoMesa: 7.5rem;
 $altoMesa: 7.5rem;
+$alturaFooter: 6rem;
 .mesa {
   max-width: $anchoMesa;
   min-width: $anchoMesa;
@@ -58,5 +208,9 @@ $altoMesa: 7.5rem;
 }
 .deshabilitada {
   background-color: rgb(175, 175, 175);
+}
+.footer {
+  max-height: $alturaFooter;
+  min-height: $alturaFooter;
 }
 </style>

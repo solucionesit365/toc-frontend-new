@@ -63,7 +63,7 @@
     <MesasComponent />
   </div>
 
-  <div class="position-absolute bottom-0 start-0">
+  <div v-if="!vistaMesas" class="position-absolute bottom-0 start-0">
     <button
       @click="volver()"
       class="btn btn-warning ms-2"
@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, ref, provide } from "vue";
 import { useStore } from "vuex";
 import {
   MDBCard,
@@ -219,6 +219,8 @@ export default {
       }
     }
 
+    provide("volver", volver);
+    provide("switchMesas", switchMesas);
     return {
       vistaMesas,
       switchMesas,
