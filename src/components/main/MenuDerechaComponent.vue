@@ -1,8 +1,17 @@
 <template>
   <div class="row">
-    <span v-if="trabajadorActivo" class="nombreTrabajador text-center">{{
-      trabajadorActivo.nombreCorto
-    }}</span>
+    <span
+      v-if="trabajadorActivo"
+      class="nombreTrabajador text-center d-inline-block text-truncate"
+      >{{ trabajadorActivo.nombreCorto }}</span
+    >
+    <span
+      class="nombreMesa d-inline-block text-truncate"
+      v-if="
+        cesta && cesta.indexMesa && arrayMesas && arrayMesas[cesta.indexMesa]
+      "
+      >Mesa {{ arrayMesas[cesta.indexMesa].nombre }}</span
+    >
   </div>
   <div class="row">
     <MDBBtn v-if="!datafonoEnUso" outline="primary" class="botonEstado">
@@ -31,8 +40,11 @@
 
 <script>
 import { useStore } from "vuex";
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { MDBIcon, MDBBtn } from "mdb-vue-ui-kit";
+import axios from "axios";
+import Swal from "sweetalert2";
+
 export default {
   name: "MenuDerechaComponent",
   components: {
@@ -41,6 +53,7 @@ export default {
   },
   setup() {
     const store = useStore();
+    const arrayMesas = ref([]);
     const arrayTrabajadores = computed(
       () => store.state.Trabajadores.arrayTrabajadores
     );
@@ -83,10 +96,30 @@ export default {
       );
     }
 
+    function actualizarMesas() {
+      axios
+        .get("mesas/getMesas")
+        .then((resMesas) => {
+          if (resMesas.data && resMesas.data.length === 50) {
+            arrayMesas.value = resMesas.data;
+          } else {
+            throw Error("Error al obtener la configuración de mesas");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
+    }
+
+    onMounted(() => {
+      actualizarMesas();
+    });
+
     return {
       trabajadorActivo,
       datafonoEnUso,
       cesta,
+      arrayMesas,
       getTotal,
     };
   },
@@ -95,7 +128,7 @@ export default {
 
 <style lang="scss" scoped>
 $anchoBotonPagar: 20.8rem;
-$altoBotonPagar: 8rem;
+$altoBotonPagar: 6rem;
 $anchoBotonEstado: 20.8rem;
 $altoBotonEstado: 3.5rem;
 .nombreTrabajador {
@@ -131,5 +164,9 @@ $altoBotonEstado: 3.5rem;
 }
 .informacion {
   font-size: 1rem;
+}
+.nombreMesa {
+  text-align: center;
+  font-weight: bold;
 }
 </style>

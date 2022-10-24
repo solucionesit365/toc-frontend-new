@@ -13,15 +13,26 @@
       <template v-for="(_lal, col) in 4" v-bind:key="col">
         <MDBCard
           v-if="row * 4 + col + 1 <= arrayCestas.length"
+          @click="seleccionar(arrayCestas[row * 4 + col])"
           class="cesta mb-3 ms-2 me-1"
           :class="{
-            cestaActiva:
-              arrayCestas[row * 4 + col]._id ===
-              arrayTrabajadores[indexActivoTrabajador].idCesta,
+            cestaActiva: arrayCestas[row * 4 + col]._id === idCestaSeleccionada,
           }"
         >
           <MDBCardBody>
-            <MDBCardTitle>{{ arrayCestas[row * 4 + col].modo }}</MDBCardTitle>
+            <MDBCardTitle
+              >{{ arrayCestas[row * 4 + col].modo }}
+              <span
+                v-if="
+                  arrayMesas[row * 4 + col] &&
+                  arrayCestas[row * 4 + col].indexMesa
+                "
+                >Mesa:
+                {{
+                  arrayMesas[arrayCestas[row * 4 + col].indexMesa].nombre
+                }}</span
+              ></MDBCardTitle
+            >
             <MDBCardText>
               <span style="font-size: 1.2rem"
                 >Total:
@@ -45,13 +56,6 @@
                   </li>
                 </ul>
               </div></MDBCardText
-            >
-            <MDBBtn
-              color="primary"
-              size="lg"
-              class="w-100"
-              @click="seleccionar(arrayCestas[row * 4 + col])"
-              >Seleccionar</MDBBtn
             >
           </MDBCardBody>
         </MDBCard>
@@ -96,14 +100,13 @@
 </template>
 
 <script>
-import { computed, ref, provide } from "vue";
+import { computed, ref, provide, onMounted } from "vue";
 import { useStore } from "vuex";
 import {
   MDBCard,
   MDBCardBody,
   MDBCardTitle,
   MDBCardText,
-  MDBBtn,
 } from "mdb-vue-ui-kit";
 import router from "../router/index";
 import axios from "axios";
@@ -116,23 +119,24 @@ export default {
     MDBCardBody,
     MDBCardTitle,
     MDBCardText,
-    MDBBtn,
     MesasComponent,
   },
   setup() {
     const store = useStore();
     const vistaMesas = ref(store.getters["Configuracion/mesasActivas"]);
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
+    const arrayMesas = ref([]);
     const arrayTrabajadores = computed(
       () => store.state.Trabajadores.arrayTrabajadores
     );
     const indexActivoTrabajador = computed(
       () => store.state.Trabajadores.indexActivo
     );
-    let idCestaSeleccionada = null;
+    const idCestaSeleccionada = ref(null);
 
     function switchMesas() {
       if (vistaMesas.value) {
+        actualizarMesas();
         vistaMesas.value = false;
       } else {
         vistaMesas.value = true;
@@ -174,10 +178,25 @@ export default {
     }
 
     function borrarCesta() {
-      if (idCestaSeleccionada) {
+      if (idCestaSeleccionada.value) {
+        for (let i = 0; i < arrayCestas.value.length; i++) {
+          if (arrayCestas.value[i]._id === idCestaSeleccionada.value) {
+            if (
+              arrayCestas.value[i].indexMesa != null &&
+              arrayCestas.value[i].indexMesa != undefined
+            ) {
+              Swal.fire(
+                "Oops...",
+                "No puedes eliminar una cesta de tipo MESA",
+                "error"
+              );
+              return false;
+            }
+          }
+        }
         axios
           .post("cestas/fulminarCesta", {
-            idCesta: idCestaSeleccionada,
+            idCesta: idCestaSeleccionada.value,
           })
           .then((resBorrarCesta) => {
             if (!resBorrarCesta.data) {
@@ -204,7 +223,7 @@ export default {
         indexActivoTrabajador.value != null &&
         arrayTrabajadores.value[indexActivoTrabajador.value]
       ) {
-        idCestaSeleccionada = cesta._id;
+        idCestaSeleccionada.value = cesta._id;
         axios.post("cestas/cambiarCestaTrabajador", {
           idCesta: cesta._id,
           idTrabajador:
@@ -219,8 +238,29 @@ export default {
       }
     }
 
+    function actualizarMesas() {
+      axios
+        .get("mesas/getMesas")
+        .then((resMesas) => {
+          if (resMesas.data && resMesas.data.length === 50) {
+            arrayMesas.value = resMesas.data;
+          } else {
+            throw Error("Error al obtener la configuración de mesas");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
+    }
+
     provide("volver", volver);
     provide("switchMesas", switchMesas);
+
+    onMounted(() => {
+      idCestaSeleccionada.value =
+        arrayTrabajadores.value[indexActivoTrabajador.value].idCesta;
+      actualizarMesas();
+    });
     return {
       vistaMesas,
       switchMesas,
@@ -233,6 +273,8 @@ export default {
       totalRows,
       nuevaCesta,
       borrarCesta,
+      arrayMesas,
+      idCestaSeleccionada,
     };
   },
 };
@@ -240,7 +282,7 @@ export default {
 
 <style lang="scss" scoped>
 $anchoCesta: 20rem;
-$alturaCesta: 20rem;
+$alturaCesta: 17rem;
 $alturaSublista: 10rem;
 $alturaGeneral: 43rem;
 $anchoGeneral: 85rem;

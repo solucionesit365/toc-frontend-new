@@ -33,7 +33,7 @@
         class="btn btn-primary ms-2"
         style="font-size: 27px"
       >
-        Vista mesas
+        Vista cestas
       </button>
     </div>
     <div class="position-absolute bottom-0 end-0">
@@ -119,8 +119,27 @@ export default {
     const indexMesaActiva = ref(0);
     const modalNombreMesa = ref(null);
     const inputNombre = ref("");
+
     function setIndexActivo(x) {
       indexMesaActiva.value = x;
+    }
+
+    async function crearCesta(indexMesa) {
+      try {
+        const resCrearCesta = (
+          await axios.post("cestas/onlyCrearCestaParaMesa", {
+            indexMesa,
+          })
+        ).data;
+        if (resCrearCesta) {
+          arrayMesas.value[indexMesa].idCesta = resCrearCesta;
+          guardarCambios();
+        } else {
+          throw Error("No se ha podido crear la cesta para la nueva mesa");
+        }
+      } catch (err) {
+        Swal.fire("Oops...", err.message, "error");
+      }
     }
 
     function activarMesa() {
@@ -133,7 +152,7 @@ export default {
         arrayMesas.value[indexMesaActiva.value] = {
           nombre: "Mesa " + (indexMesaActiva.value + 1),
         };
-        guardarCambios();
+        crearCesta(indexMesaActiva.value);
       }
     }
 
@@ -144,11 +163,23 @@ export default {
         indexMesaActiva.value != undefined &&
         arrayMesas.value[indexMesaActiva.value]
       ) {
+        axios
+          .post("cestas/fulminarCesta", {
+            idCesta: arrayMesas.value[indexMesaActiva.value].idCesta,
+          })
+          .then((resFulminarCesta) => {
+            if (!resFulminarCesta.data) {
+              throw Error("No se ha podido eliminar la cesta de la mesa");
+            }
+          })
+          .catch((err) => {
+            Swal.fire("Oops...", err.message, "error");
+          });
         arrayMesas.value[indexMesaActiva.value] = {
           nombre: null,
-          color: null,
-          _id: null,
+          idCesta: null,
         };
+
         guardarCambios();
       }
     }
@@ -185,7 +216,6 @@ export default {
       axios
         .get("mesas/getMesas")
         .then((resMesas) => {
-          console.log(resMesas.data);
           if (resMesas.data && resMesas.data.length === 50) {
             arrayMesas.value = resMesas.data;
           } else {
