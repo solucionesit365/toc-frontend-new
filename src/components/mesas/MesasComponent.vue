@@ -133,6 +133,7 @@ export default {
         arrayMesas.value[indexMesaActiva.value] = {
           nombre: "Mesa " + (indexMesaActiva.value + 1),
         };
+        guardarCambios();
       }
     }
 
@@ -148,6 +149,7 @@ export default {
           color: null,
           _id: null,
         };
+        guardarCambios();
       }
     }
 
@@ -160,7 +162,20 @@ export default {
       ) {
         arrayMesas.value[indexMesaActiva.value].nombre = inputNombre.value;
         modalNombreMesa.value = false;
+        guardarCambios();
       }
+    }
+
+    function guardarCambios() {
+      axios
+        .post("mesas/guardarCambios", { arrayMesas: arrayMesas.value })
+        .then((resGuardar) => {
+          if (!resGuardar.data)
+            throw Error("No se han podido guardar los cambios");
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
     }
 
     const volver = inject("volver");
@@ -171,7 +186,11 @@ export default {
         .get("mesas/getMesas")
         .then((resMesas) => {
           console.log(resMesas.data);
-          if (resMesas.data) arrayMesas.value = resMesas.data;
+          if (resMesas.data && resMesas.data.length === 50) {
+            arrayMesas.value = resMesas.data;
+          } else {
+            throw Error("Error al obtener la configuración de mesas");
+          }
         })
         .catch((err) => {
           Swal.fire("Oops...", err.message, "error");
