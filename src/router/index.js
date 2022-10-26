@@ -21,6 +21,18 @@ const routes = [
     name: "Cestas",
     component: () => import("../views/CestasView.vue"),
   },
+  {
+    path: "/menu",
+    name: "Menu",
+    component: () => import("../views/MenuPrincipalView.vue"),
+    children: [
+      {
+        path: "abrirCaja",
+        component: () =>
+          import("../components/menu/abrir-caja/AbrirCajaComponent.vue"),
+      },
+    ],
+  },
 ];
 
 const router = createRouter({
