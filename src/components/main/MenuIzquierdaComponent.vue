@@ -5,7 +5,10 @@
     </div>
   </div>
   <MDBBtnGroup v-if="!vistaCliente" class="shadow-0">
-    <MDBBtn outline="secondary" class="botones" @click="goTo('/menu')"
+    <MDBBtn
+      outline="secondary"
+      class="botones"
+      @click="goTo('/menu/caja/tickets')"
       ><MDBIcon icon="bars" size="4x"
     /></MDBBtn>
     <MDBBtn outline="secondary" class="botones ms-1"
