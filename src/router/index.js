@@ -27,9 +27,30 @@ const routes = [
     component: () => import("../views/MenuPrincipalView.vue"),
     children: [
       {
-        path: "abrirCaja",
-        component: () =>
-          import("../components/menu/abrir-caja/AbrirCajaComponent.vue"),
+        path: "caja",
+        component: () => import("../views/CajaView.vue"),
+        children: [
+          {
+            path: "cerrarCaja",
+            component: () =>
+              import("../components/menu/caja/CerrarCajaComponent.vue"),
+          },
+          {
+            path: "tickets",
+            component: () =>
+              import("../components/menu/caja/TicketsComponent.vue"),
+          },
+          {
+            path: "entradaDinero",
+            component: () =>
+              import("../components/menu/caja/EntradaComponent.vue"),
+          },
+          {
+            path: "salidaDinero",
+            component: () =>
+              import("../components/menu/caja/SalidaComponent.vue"),
+          },
+        ],
       },
     ],
   },
