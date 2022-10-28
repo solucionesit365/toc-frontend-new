@@ -361,7 +361,7 @@ export default {
 
     const cantidad = computed(() => {
       if (numpadRef.value) {
-        return numpadRef.value.cantidad;
+        return Number(numpadRef.value.cantidad);
       }
       return null;
     });
