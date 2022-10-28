@@ -87,7 +87,7 @@
       <button
         type="button"
         class="btn btn-outline-secondary py-3 botonNumpad"
-        @click="okValue(Number(gramos))"
+        @click="okValue(Number(cantidad))"
       >
         OK
       </button>
@@ -100,28 +100,34 @@ import { ref, inject } from "vue";
 export default {
   name: "NumpadComponent",
   setup(_props, { expose }) {
-    const gramos = ref("0");
+    const cantidad = ref("0");
     const okValue = inject("okValue");
 
     function addTecla(x) {
-      gramos.value += x;
-      if (gramos.value[0] == "0") gramos.value = gramos.value.slice(1);
+      cantidad.value += x;
+      if (cantidad.value[0] == "0") cantidad.value = cantidad.value.slice(1);
     }
 
     function deleteTecla() {
-      gramos.value = gramos.value.slice(0, -1);
-      if (gramos.value === "") gramos.value = "0";
+      cantidad.value = cantidad.value.slice(0, -1);
+      if (cantidad.value === "") cantidad.value = "0";
+    }
+
+    function setValor(aLaVez) {
+      cantidad.value = aLaVez.toString();
     }
 
     expose({
-      gramos,
+      cantidad,
+      setValor,
     });
 
     return {
       okValue,
-      gramos,
+      cantidad,
       addTecla,
       deleteTecla,
+      setValor,
     };
   },
 };

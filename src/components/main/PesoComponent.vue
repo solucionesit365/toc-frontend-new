@@ -14,8 +14,8 @@
     <MDBModalBody class="mx-auto">
       <div class="row">
         <MDBInput
-          v-if="numpadRef && numpadRef.gramos"
-          v-model="numpadRef.gramos"
+          v-if="numpadRef && numpadRef.cantidad"
+          v-model="numpadRef.cantidad"
         />
       </div>
       <div class="row">

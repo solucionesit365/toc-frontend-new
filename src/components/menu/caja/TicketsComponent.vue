@@ -14,7 +14,7 @@
           v-for="(ticket, index) in arrayTickets"
           v-bind:key="index"
           :class="{ 'table-active': ticket._id === idActivo }"
-          @click="setActivo(ticket._id)"
+          @click="setActivo(ticket)"
         >
           <td>{{ ticket._id }}</td>
           <td>{{ getTiempo(ticket.timestamp) }}</td>
@@ -24,7 +24,32 @@
       </tbody>
     </MDBTable>
   </div>
-  <div class="col-md-5">{{ idActivo }}</div>
+  <div class="col-md-5" v-if="ticketSeleccionado">
+    <div id="detalleTicket">
+      <h2 class="text-center">Ticket {{ ticketSeleccionado._id }}</h2>
+      <h6 class="text-center">{{ getTiempo(ticketSeleccionado.timestamp) }}</h6>
+      <br />
+      <hr />
+      <table class="table">
+        <tr>
+          <th class="titulosTicket">Producto</th>
+          <th class="titulosTicket">Subtotal</th>
+          <th class="titulosTicket">Unidades</th>
+        </tr>
+        <tr
+          v-for="(item, index) of ticketSeleccionado.lista"
+          v-bind:key="{ index }"
+        >
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.subtotal.toFixed(2) }} €</td>
+          <td>{{ item.unidades }}</td>
+        </tr>
+      </table>
+      <hr />
+      <!-- <p>Forma de pago: {{ ticketSeleccionado.tipoPago }}</p> -->
+      <h1 class="text-center">Total: {{ ticketSeleccionado.total }}</h1>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -40,10 +65,12 @@ export default {
   setup() {
     const store = useStore();
     const idActivo = ref(null);
+    const ticketSeleccionado = ref(null);
     const arrayTickets = computed(() => {
       const aux = store.state.Caja.arrayVentas;
       return aux.reverse();
     });
+
     // const dataset1 = ref({
     //   columns: ["Número ticket", "Hora", "Forma de pago", "Total"],
     //   rows: [],
@@ -54,8 +81,9 @@ export default {
       return moment(fecha).format("HH:ss DD/MM/YYYY");
     }
 
-    function setActivo(x) {
-      idActivo.value = x;
+    function setActivo(ticket) {
+      idActivo.value = ticket._id;
+      ticketSeleccionado.value = ticket;
     }
 
     // watch(arrayTickets, () => {
@@ -69,7 +97,7 @@ export default {
       //   setActivo(arra);
       // });
       if (arrayTickets.value && arrayTickets.value.length > 0) {
-        setActivo(arrayTickets.value[0]._id);
+        setActivo(arrayTickets.value[0]);
       }
     });
 
@@ -78,6 +106,7 @@ export default {
       getTiempo,
       setActivo,
       idActivo,
+      ticketSeleccionado,
       // dataset1,
       // tablaTickets,
     };
@@ -85,4 +114,18 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+#detalleTicket {
+  font-family: Consolas, monaco, monospace;
+  font-size: 14px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 700;
+  line-height: 26.4px;
+  margin: 1rem;
+}
+.titulosTicket {
+  font-weight: bold;
+  font-size: 18px;
+}
+</style>
