@@ -2,28 +2,67 @@
   <div class="row">
     <CambioComponent />
   </div>
-  <div class="row mt-2">
+  <div class="row mt-4">
     <div class="col">
-      <MDBCard class="cardTicketRestaurante">
+      <MDBCard
+        class="cardTicketRestaurante text-center"
+        @click="formaPago = 'EFECTIVO'"
+      >
         <MDBCardBody>
-          <MDBCardTitle>Ticket restaurante</MDBCardTitle>
           <MDBCardText>
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
+            <img
+              src="img/img-efectivo.png"
+              width="300"
+              alt="Seleccionar efectivo"
+            />
+            <MDBIcon
+              v-if="formaPago === 'EFECTIVO'"
+              class="mt-4"
+              icon="hand-pointer"
+              size="5x"
+            />
           </MDBCardText>
-          <MDBBtn color="primary">Button</MDBBtn>
         </MDBCardBody>
       </MDBCard>
     </div>
     <div class="col">
-      <MDBCard class="cardTicketRestaurante">
+      <MDBCard class="cardTicketRestaurante text-center">
         <MDBCardBody>
-          <MDBCardTitle>Ticket restaurante</MDBCardTitle>
           <MDBCardText>
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
+            <img
+              src="img/img-tkrs.png"
+              width="300"
+              alt="Seleccionar pago con ticket restaurante"
+            />
+            <MDBIcon
+              v-if="formaPago === 'TKRS'"
+              class="mt-4"
+              icon="hand-pointer"
+              size="5x"
+            />
           </MDBCardText>
-          <MDBBtn color="primary">Button</MDBBtn>
+        </MDBCardBody>
+      </MDBCard>
+    </div>
+    <div class="col">
+      <MDBCard
+        class="cardTicketRestaurante text-center"
+        @click="formaPago = 'TARJETA'"
+      >
+        <MDBCardBody>
+          <MDBCardText>
+            <img
+              src="img/img-tarjetas.png"
+              width="300"
+              alt="Seleccionar pago con tarjeta"
+            />
+            <MDBIcon
+              v-if="formaPago === 'TARJETA'"
+              class="mt-4"
+              icon="hand-pointer"
+              size="5x"
+            />
+          </MDBCardText>
         </MDBCardBody>
       </MDBCard>
     </div>
@@ -31,17 +70,24 @@
     <!-- TICKET RESTAURANTE, COBRAR CON VISA, ¿CANCELAR OPERACIÓN DEL DATÁFONO? -->
   </div>
   <VolverComponent />
+  <div class="position-relative">
+    <MDBBtn class="position-absolute bottom-0 end-0" size="lg" color="primary"
+      >JEJE</MDBBtn
+    >
+  </div>
 </template>
 
 <script>
-import { computed, provide } from "vue";
+import { computed, provide, ref } from "vue";
 import CambioComponent from "../components/cobro/CambioComponent.vue";
 import VolverComponent from "../components/Volver.vue";
+import Swal from "sweetalert2";
+import axios from "axios";
 import {
   MDBCard,
   MDBCardBody,
-  MDBCardTitle,
   MDBCardText,
+  MDBIcon,
   MDBBtn,
 } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
@@ -50,14 +96,15 @@ export default {
   components: {
     CambioComponent,
     MDBCard,
-    MDBCardBody,
-    MDBCardTitle,
-    MDBCardText,
     MDBBtn,
+    MDBCardBody,
+    MDBCardText,
     VolverComponent,
+    MDBIcon,
   },
   setup() {
     const store = useStore();
+    const formaPago = ref("TARJETA");
     const indexTrabajadorActivo = computed(
       () => store.state.Trabajadores.indexActivo
     );
@@ -65,17 +112,17 @@ export default {
       () => store.state.Trabajadores.arrayTrabajadores
     );
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
-    // const trabajadorActivo = computed(() => {
-    //   if (
-    //     arrayTrabajadores.value &&
-    //     indexTrabajadorActivo.value != undefined &&
-    //     indexTrabajadorActivo.value != null &&
-    //     arrayTrabajadores.value[indexTrabajadorActivo.value]
-    //   ) {
-    //     return arrayTrabajadores.value[indexTrabajadorActivo.value];
-    //   }
-    //   return null;
-    // });
+    const trabajadorActivo = computed(() => {
+      if (
+        arrayTrabajadores.value &&
+        indexTrabajadorActivo.value != undefined &&
+        indexTrabajadorActivo.value != null &&
+        arrayTrabajadores.value[indexTrabajadorActivo.value]
+      ) {
+        return arrayTrabajadores.value[indexTrabajadorActivo.value];
+      }
+      return null;
+    });
 
     const cesta = computed(() => {
       if (arrayCestas.value) {
@@ -91,6 +138,36 @@ export default {
       return null;
     });
 
+    async function cobrar() {
+      try {
+        const tipo = getTipo(cesta.value.modo);
+
+        const resultado = await axios.post("tickets/crearTicket", {
+          total: getTotal(cesta.value),
+          idCesta: cesta.value._id,
+          idTrabajador: trabajadorActivo.value._id,
+          tipo,
+        });
+
+        if (!resultado.data) {
+          throw Error("No se ha podido crear el ticket");
+        }
+      } catch (err) {
+        Swal.fire("Oops...", err.message, "error");
+      }
+    }
+
+    function getTipo(modoCesta) {
+      switch (modoCesta) {
+        case "VENTA":
+          return "EFECTIVO";
+        case "CONSUMO_PERSONAL":
+          return modoCesta;
+        case "DEVOLUCION":
+          throw Error("CASO ESPECIAL DEVOLUCIONES");
+      }
+    }
+
     function getTotal(cesta) {
       return (
         cesta.detalleIva.importe1 +
@@ -104,13 +181,15 @@ export default {
     return {
       cesta,
       getTotal,
+      cobrar,
+      formaPago,
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-$anchoCardTkrs: 40rem;
+$anchoCardTkrs: 26rem;
 $altoCardTkrs: 20rem;
 .cardTicketRestaurante {
   max-width: $anchoCardTkrs;

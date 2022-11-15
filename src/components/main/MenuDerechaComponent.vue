@@ -30,7 +30,7 @@
       v-if="cesta && getTotal(cesta) > 0"
       outline="primary"
       class="botonPagar"
-      @click="cobrar()"
+      @click="goTo('/cobro')"
     >
       <MDBIcon icon="hand-holding-usd" size="5x" />
       <span class="letraTotal ms-3 mt-2">
@@ -42,7 +42,7 @@
       v-if="cesta && getTotal(cesta) === 0"
       outline="primary"
       class="botonPagar"
-      @click="goTo('/cobro')"
+      @click="abrirCajon()"
     >
       <MDBIcon icon="hand-holding-usd" size="5x" />
     </MDBBtn>
@@ -127,38 +127,12 @@ export default {
         });
     }
 
-    function getTipo(modoCesta) {
-      switch (modoCesta) {
-        case "VENTA":
-          return "EFECTIVO";
-        case "CONSUMO_PERSONAL":
-          return modoCesta;
-        case "DEVOLUCION":
-          throw Error("CASO ESPECIAL DEVOLUCIONES");
-      }
-    }
-
     function goTo(url) {
       router.push(url);
     }
 
-    async function cobrar() {
-      try {
-        const tipo = getTipo(cesta.value.modo);
-
-        const resultado = await axios.post("tickets/crearTicket", {
-          total: getTotal(cesta.value),
-          idCesta: cesta.value._id,
-          idTrabajador: trabajadorActivo.value._id,
-          tipo,
-        });
-
-        if (!resultado.data) {
-          throw Error("No se ha podido crear el ticket");
-        }
-      } catch (err) {
-        Swal.fire("Oops...", err.message, "error");
-      }
+    function abrirCajon() {
+      Swal.fire("en construcción", "cosa en construcción", "info");
     }
 
     onMounted(() => {
@@ -171,8 +145,8 @@ export default {
       cesta,
       arrayMesas,
       getTotal,
-      cobrar,
       goTo,
+      abrirCajon,
     };
   },
 };
