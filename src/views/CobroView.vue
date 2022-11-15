@@ -70,10 +70,8 @@
     <!-- TICKET RESTAURANTE, COBRAR CON VISA, ¿CANCELAR OPERACIÓN DEL DATÁFONO? -->
   </div>
   <VolverComponent />
-  <div class="position-relative">
-    <MDBBtn class="position-absolute bottom-0 end-0" size="lg" color="primary"
-      >JEJE</MDBBtn
-    >
+  <div class="position-absolute bottom-0 end-0">
+    <MDBBtn class="botonCobrar" color="primary" @click="cobrar()">Pagar</MDBBtn>
   </div>
 </template>
 
@@ -91,6 +89,7 @@ import {
   MDBBtn,
 } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 export default {
   name: "CobroView",
   components: {
@@ -104,6 +103,7 @@ export default {
   },
   setup() {
     const store = useStore();
+    const router = useRouter();
     const formaPago = ref("TARJETA");
     const indexTrabajadorActivo = computed(
       () => store.state.Trabajadores.indexActivo
@@ -140,33 +140,35 @@ export default {
 
     async function cobrar() {
       try {
-        const tipo = getTipo(cesta.value.modo);
+        // const tipo = getTipo(cesta.value.modo);
 
         const resultado = await axios.post("tickets/crearTicket", {
           total: getTotal(cesta.value),
           idCesta: cesta.value._id,
           idTrabajador: trabajadorActivo.value._id,
-          tipo,
+          tipo: formaPago.value,
         });
 
         if (!resultado.data) {
           throw Error("No se ha podido crear el ticket");
+        } else {
+          router.push("/main");
         }
       } catch (err) {
         Swal.fire("Oops...", err.message, "error");
       }
     }
 
-    function getTipo(modoCesta) {
-      switch (modoCesta) {
-        case "VENTA":
-          return "EFECTIVO";
-        case "CONSUMO_PERSONAL":
-          return modoCesta;
-        case "DEVOLUCION":
-          throw Error("CASO ESPECIAL DEVOLUCIONES");
-      }
-    }
+    // function getTipo(modoCesta) {
+    //   switch (modoCesta) {
+    //     case "VENTA":
+    //       return "EFECTIVO";
+    //     case "CONSUMO_PERSONAL":
+    //       return modoCesta;
+    //     case "DEVOLUCION":
+    //       throw Error("CASO ESPECIAL DEVOLUCIONES");
+    //   }
+    // }
 
     function getTotal(cesta) {
       return (
@@ -196,5 +198,9 @@ $altoCardTkrs: 20rem;
   min-width: $anchoCardTkrs;
   max-height: $altoCardTkrs;
   min-height: $altoCardTkrs;
+}
+
+.botonCobrar {
+  font-size: 2.5rem;
 }
 </style>
