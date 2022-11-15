@@ -87,7 +87,8 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, inject } from "vue";
+
 import {
   MDBCard,
   MDBCardBody,
@@ -106,7 +107,8 @@ export default {
   },
   setup() {
     const totalRecibido = ref(0);
-    const aPagar = ref(0);
+    const total = inject("total");
+    const aPagar = ref(total);
     const historial = ref([]);
 
     function sumar(x) {

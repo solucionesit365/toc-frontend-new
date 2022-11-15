@@ -26,12 +26,26 @@
     />
   </div>
   <div class="row mt-1">
-    <MDBBtn outline="primary" class="botonPagar">
-      <MDBIcon icon="hand-holding-usd" size="5x" />
-      <span v-if="cesta" class="letraTotal ms-3 mt-2">
-        {{ getTotal(cesta).toFixed(2) }} €
-      </span></MDBBtn
+    <MDBBtn
+      v-if="cesta && getTotal(cesta) > 0"
+      outline="primary"
+      class="botonPagar"
+      @click="cobrar()"
     >
+      <MDBIcon icon="hand-holding-usd" size="5x" />
+      <span class="letraTotal ms-3 mt-2">
+        {{ getTotal(cesta).toFixed(2) }} €
+      </span>
+    </MDBBtn>
+
+    <MDBBtn
+      v-if="cesta && getTotal(cesta) === 0"
+      outline="primary"
+      class="botonPagar"
+      @click="goTo('/cobro')"
+    >
+      <MDBIcon icon="hand-holding-usd" size="5x" />
+    </MDBBtn>
     <span class="text-end fst-italic informacion"
       >Tienda (t-000) Empresa (Tena) Versión (4.0)</span
     >
@@ -44,6 +58,7 @@ import { computed, onMounted, ref } from "vue";
 import { MDBIcon, MDBBtn } from "mdb-vue-ui-kit";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useRouter } from "vue-router";
 
 export default {
   name: "MenuDerechaComponent",
@@ -53,6 +68,7 @@ export default {
   },
   setup() {
     const store = useStore();
+    const router = useRouter();
     const arrayMesas = ref([]);
     const arrayTrabajadores = computed(
       () => store.state.Trabajadores.arrayTrabajadores
@@ -111,6 +127,40 @@ export default {
         });
     }
 
+    function getTipo(modoCesta) {
+      switch (modoCesta) {
+        case "VENTA":
+          return "EFECTIVO";
+        case "CONSUMO_PERSONAL":
+          return modoCesta;
+        case "DEVOLUCION":
+          throw Error("CASO ESPECIAL DEVOLUCIONES");
+      }
+    }
+
+    function goTo(url) {
+      router.push(url);
+    }
+
+    async function cobrar() {
+      try {
+        const tipo = getTipo(cesta.value.modo);
+
+        const resultado = await axios.post("tickets/crearTicket", {
+          total: getTotal(cesta.value),
+          idCesta: cesta.value._id,
+          idTrabajador: trabajadorActivo.value._id,
+          tipo,
+        });
+
+        if (!resultado.data) {
+          throw Error("No se ha podido crear el ticket");
+        }
+      } catch (err) {
+        Swal.fire("Oops...", err.message, "error");
+      }
+    }
+
     onMounted(() => {
       actualizarMesas();
     });
@@ -121,6 +171,8 @@ export default {
       cesta,
       arrayMesas,
       getTotal,
+      cobrar,
+      goTo,
     };
   },
 };
