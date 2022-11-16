@@ -14,16 +14,57 @@
     >
   </div>
   <div class="row">
-    <MDBBtn v-if="!datafonoEnUso" outline="primary" class="botonEstado">
+    <MDBBtn v-if="estadoDatafono === ''" outline="primary" class="botonEstado">
       <span class="disponible">Datáfono disponible</span>
     </MDBBtn>
+    <MDBBtn
+      v-if="estadoDatafono === 'AGAIN'"
+      outline="warning"
+      class="botonEstado"
+      @click="tarjetaUltimoTicket()"
+    >
+      <span class="again">Reintentar pago</span>
+    </MDBBtn>
     <img
-      v-else
+      v-if="estadoDatafono === 'PENDIENTE'"
       src="pay-loading.svg"
       alt="Procesando pago"
       width="200"
       height="60"
     />
+    <div
+      v-if="estadoDatafono === 'APROBADA'"
+      class="d-inline text-center caritasContentas grupoContento pt-1"
+    >
+      <MDBIcon class="d-inline" icon="grin-alt" iconStyle="far" size="3x" />
+      <MDBIcon
+        class="d-inline ms-2"
+        icon="grin-alt"
+        iconStyle="far"
+        size="3x"
+      />
+      <MDBIcon
+        class="d-inline ms-2"
+        icon="grin-alt"
+        iconStyle="far"
+        size="3x"
+      />
+      <MDBIcon
+        class="d-inline ms-2"
+        icon="grin-alt"
+        iconStyle="far"
+        size="3x"
+      />
+    </div>
+    <div
+      v-if="estadoDatafono === 'DENEGADA'"
+      class="d-inline text-center caritasTristes grupoTriste pt-1"
+    >
+      <MDBIcon class="d-inline" icon="frown" iconStyle="far" size="3x" />
+      <MDBIcon class="d-inline ms-2" icon="frown" iconStyle="far" size="3x" />
+      <MDBIcon class="d-inline ms-2" icon="frown" iconStyle="far" size="3x" />
+      <MDBIcon class="d-inline ms-2" icon="frown" iconStyle="far" size="3x" />
+    </div>
   </div>
   <div class="row mt-1">
     <MDBBtn
@@ -77,7 +118,7 @@ export default {
     const indexTrabajadorActivo = computed(
       () => store.state.Trabajadores.indexActivo
     );
-    const datafonoEnUso = computed(() => store.state.Datafono.enUso);
+    const estadoDatafono = computed(() => store.state.Datafono.estado);
     const trabajadorActivo = computed(() => {
       if (
         arrayTrabajadores.value &&
@@ -135,18 +176,32 @@ export default {
       Swal.fire("en construcción", "cosa en construcción", "info");
     }
 
+    function tarjetaUltimoTicket() {
+      axios
+        .post("paytef/cobrarUltimoTicket", {
+          idTrabajador: trabajadorActivo.value._id,
+        })
+        .then(() => {
+          store.dispatch("Datafono/setEstado", "PENDIENTE");
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
+    }
+
     onMounted(() => {
       actualizarMesas();
     });
 
     return {
       trabajadorActivo,
-      datafonoEnUso,
+      estadoDatafono,
       cesta,
       arrayMesas,
       getTotal,
       goTo,
       abrirCajon,
+      tarjetaUltimoTicket,
     };
   },
 };
@@ -184,6 +239,11 @@ $altoBotonEstado: 3.5rem;
   font-weight: bold;
   font-size: 1rem;
 }
+.again {
+  color: #000000;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
 .fotoProcesandoPago {
   display: inline-block !important;
   vertical-align: top;
@@ -194,5 +254,23 @@ $altoBotonEstado: 3.5rem;
 .nombreMesa {
   text-align: center;
   font-weight: bold;
+}
+.caritasContentas {
+  background-color: #85ff94;
+}
+.caritasTristes {
+  background-color: #ff9575;
+}
+.grupoTriste {
+  min-width: $anchoBotonEstado;
+  max-width: $anchoBotonEstado;
+  min-height: $altoBotonEstado;
+  max-height: $altoBotonEstado;
+}
+.grupoContento {
+  min-width: $anchoBotonEstado;
+  max-width: $anchoBotonEstado;
+  min-height: $altoBotonEstado;
+  max-height: $altoBotonEstado;
 }
 </style>

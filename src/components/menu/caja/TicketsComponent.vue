@@ -1,5 +1,5 @@
 <template>
-  <div class="col-md-7">
+  <div class="col-md-7 listaTickets">
     <MDBTable hover>
       <thead>
         <tr>
@@ -67,8 +67,7 @@ export default {
     const idActivo = ref(null);
     const ticketSeleccionado = ref(null);
     const arrayTickets = computed(() => {
-      const aux = store.state.Caja.arrayVentas;
-      return aux.reverse();
+      return store.state.Caja.arrayVentas;
     });
 
     // const dataset1 = ref({
@@ -115,6 +114,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$sizeLista: 40rem !important;
 #detalleTicket {
   font-family: Consolas, monaco, monospace;
   font-size: 14px;
@@ -127,5 +127,10 @@ export default {
 .titulosTicket {
   font-weight: bold;
   font-size: 18px;
+}
+.listaTickets {
+  max-height: $sizeLista;
+  min-height: $sizeLista;
+  overflow-y: scroll;
 }
 </style>

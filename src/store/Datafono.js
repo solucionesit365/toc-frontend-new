@@ -1,16 +1,16 @@
 export default {
   namespaced: true,
   state: {
-    enUso: false,
+    estado: "",
   },
   mutations: {
-    setEnUsoMutation(state, payload) {
-      state.enUso = payload;
+    setEstadoMutation(state, payload) {
+      state.estado = payload;
     },
   },
   actions: {
-    setEnUso({ commit }, payload) {
-      commit("setEnUsoMutation", payload);
+    setEstado({ commit }, payload) {
+      commit("setEstadoMutation", payload);
     },
   },
 };

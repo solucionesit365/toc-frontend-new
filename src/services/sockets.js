@@ -90,19 +90,28 @@ socket.on("resConsultaPuntos", (data) => {
 });
 
 socket.on("consultaPaytef", (data) => {
-  store.dispatch("setEsperandoDatafono", false);
-  if (data.error === false) {
-    store.dispatch("Cestas/setIdAction", -1);
-    store.dispatch("setModoActual", "NORMAL");
-    store.dispatch("Clientes/resetClienteActivo");
-    store.dispatch("Footer/resetMenuActivo");
-    router.push({
-      name: "Home",
-      params: { tipoToast: "success", mensajeToast: "Ticket creado" },
-    });
+  if (data) {
+    store.dispatch("Datafono/setEstado", "APROBADA");
   } else {
-    toast.error(data.mensaje);
+    store.dispatch("Datafono/setEstado", "DENEGADA");
+    setTimeout(() => {
+      store.dispatch("Datafono/setEstado", "AGAIN");
+    }, 3000);
   }
+
+  // store.dispatch("setEsperandoDatafono", false);
+  // if (data.error === false) {
+  //   store.dispatch("Cestas/setIdAction", -1);
+  //   store.dispatch("setModoActual", "NORMAL");
+  //   store.dispatch("Clientes/resetClienteActivo");
+  //   store.dispatch("Footer/resetMenuActivo");
+  //   router.push({
+  //     name: "Home",
+  //     params: { tipoToast: "success", mensajeToast: "Ticket creado" },
+  //   });
+  // } else {
+  //   toast.error(data.mensaje);
+  // }
 });
 
 // socket.on('resPaytef', (data) => {

@@ -152,6 +152,8 @@ export default {
         if (!resultado.data) {
           throw Error("No se ha podido crear el ticket");
         } else {
+          if (formaPago.value === "TARJETA")
+            store.dispatch("Datafono/setEstado", "PENDIENTE");
           router.push("/main");
         }
       } catch (err) {
