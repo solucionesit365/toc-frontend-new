@@ -6,21 +6,6 @@
   <div class="position-absolute bottom-0 start-50 translate-middle-x mb-2">
     <div class="sizeTrabajadores">
       <div class="trabajadores">
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
-        <button>dfsafadsd</button>
         <MDBBtn
           v-for="(item, index) in arrayTrabajadores"
           v-bind:key="index"
