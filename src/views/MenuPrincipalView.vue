@@ -1,45 +1,30 @@
 <template>
   <LateralComponent />
-  <div class="margenLateral">
+  <div class="margenLateral position-relative">
     <router-view />
-  </div>
-  <div class="position-absolute bottom-0 start-50 translate-middle-x mb-2">
-    <div class="sizeTrabajadores">
-      <div class="trabajadores">
-        <MDBBtn
-          v-for="(item, index) in arrayTrabajadores"
-          v-bind:key="index"
-          color="primary"
-          rounded
-          size="lg"
-          @click="setIndexActivo(index)"
-          >{{ item.nombre }}</MDBBtn
-        >
+    <div class="position-absolute bottom-0 start-0 mb-1 mt-4">
+      <div class="sizeTrabajadores">
+        <div class="btn-group" role="group">
+          <button
+            v-for="(item, index) in arrayTrabajadores"
+            v-bind:key="index"
+            type="button"
+            class="btn btn-lg sizeBotonesTrabajador d-inline-block text-truncate me-2"
+            :class="[
+              index === indexActivo ? 'btn-primary' : 'btn-outline-primary',
+            ]"
+            @click="setIndexActivo(index)"
+          >
+            {{ item.nombre }}
+          </button>
+        </div>
       </div>
-
-      <!-- <MDBBtn
-          v-else
-          outline="primary"
-          rounded
-          size="lg"
-          class="d-inline-block"
-          @click="setIndexActivo(index)"
-          >{{ item.nombre }}</MDBBtn
-        > -->
-      <!-- <MDBBadge
-        color="danger"
-        class="translate-middle p-1 d-inline-block"
-        pill
-        notification
-        >99+</MDBBadge
-      > -->
     </div>
   </div>
 </template>
 
 <script>
 import LateralComponent from "../components/menu/LateralComponent.vue";
-import { MDBBtn } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import { computed } from "vue";
 
@@ -47,8 +32,6 @@ export default {
   name: "MenuPrincipalView",
   components: {
     LateralComponent,
-    // MDBBadge,
-    MDBBtn,
   },
   setup() {
     const store = useStore();
@@ -71,22 +54,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$anchoCajaTrabajadores: 300px;
+$anchoCajaTrabajadores: 73rem;
 $altoCajaTrabajadores: 4rem;
+$anchoBotonesTrabajador: 17rem;
+$altoBotonesTrabajador: 3.3rem;
+$altoMain: 47.5rem;
 .margenLateral {
   margin-left: 11rem !important;
+  max-height: $altoMain;
+  min-height: $altoMain;
 }
 .sizeTrabajadores {
-  width: 300px;
+  width: $anchoCajaTrabajadores;
   max-height: $altoCajaTrabajadores;
   min-height: $altoCajaTrabajadores;
   overflow-x: scroll;
   display: block;
-  background-color: red;
 }
 
-.trabajadores {
-  display: inline-block;
-  width: 100px;
+.sizeBotonesTrabajador {
+  max-width: $anchoBotonesTrabajador;
+  min-width: $anchoBotonesTrabajador;
+  min-height: $altoBotonesTrabajador;
+  max-height: $altoBotonesTrabajador;
+  font-size: 1.2rem;
 }
 </style>

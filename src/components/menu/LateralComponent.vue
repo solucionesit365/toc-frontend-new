@@ -21,6 +21,7 @@
         <MDBIcon icon="piggy-bank" size="5x" />
       </MDBSideNavItem>
       <MDBSideNavItem
+        @click="goTo('/menu/fichajes')"
         class="mt-5"
         :class="{
           activo: router.currentRoute.value.path.startsWith('/menu/fichajes'),

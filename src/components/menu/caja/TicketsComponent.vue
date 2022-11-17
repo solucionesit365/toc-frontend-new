@@ -18,7 +18,7 @@
         >
           <td>{{ ticket._id }}</td>
           <td>{{ getTiempo(ticket.timestamp) }}</td>
-          <td>EFECTIVO</td>
+          <td>{{ ticket.tipoPago }}</td>
           <td>{{ ticket.total }} €</td>
         </tr>
       </tbody>
@@ -48,24 +48,60 @@
       <hr />
       <!-- <p>Forma de pago: {{ ticketSeleccionado.tipoPago }}</p> -->
       <h1 class="text-center">Total: {{ ticketSeleccionado.total }}</h1>
+      <MDBBtn
+        v-if="ticketSeleccionado.tipoPago === 'EFECTIVO'"
+        color="primary"
+        class="w-100"
+        size="lg"
+        @click="pagarConTarjeta(ticketSeleccionado._id)"
+        >Pagar con tarjeta</MDBBtn
+      >
+      <MDBBtn
+        v-if="ticketSeleccionado.tipoPago === 'TARJETA'"
+        color="danger"
+        class="w-100"
+        size="lg"
+        @click="devolucionCliente(ticketSeleccionado._id)"
+        >Devolución al cliente</MDBBtn
+      >
     </div>
   </div>
 </template>
 
 <script>
-import { MDBTable } from "mdb-vue-ui-kit";
+import { MDBTable, MDBBtn } from "mdb-vue-ui-kit";
 import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
+import axios from "axios";
+import Swal from "sweetalert2";
 export default {
   name: "TicketsComponent",
   components: {
     MDBTable,
+    MDBBtn,
   },
   setup() {
     const store = useStore();
     const idActivo = ref(null);
     const ticketSeleccionado = ref(null);
+    const arrayTrabajadores = computed(
+      () => store.state.Trabajadores.arrayTrabajadores
+    );
+    const indexTrabajadorActivo = computed(
+      () => store.state.Trabajadores.indexActivo
+    );
+    const trabajadorActivo = computed(() => {
+      if (
+        arrayTrabajadores.value &&
+        indexTrabajadorActivo.value != undefined &&
+        indexTrabajadorActivo.value != null &&
+        arrayTrabajadores.value[indexTrabajadorActivo.value]
+      ) {
+        return arrayTrabajadores.value[indexTrabajadorActivo.value];
+      }
+      return null;
+    });
     const arrayTickets = computed(() => {
       return store.state.Caja.arrayVentas;
     });
@@ -83,6 +119,17 @@ export default {
     function setActivo(ticket) {
       idActivo.value = ticket._id;
       ticketSeleccionado.value = ticket;
+    }
+
+    function pagarConTarjeta(idTicket) {
+      axios.post("paytef/cobrarConTarjeta", {
+        idTicket,
+        idTrabajador: trabajadorActivo.value._id,
+      });
+    }
+
+    function devolucionCliente() {
+      Swal.fire("Oops...", "En construcción", "info");
     }
 
     // watch(arrayTickets, () => {
@@ -106,6 +153,8 @@ export default {
       setActivo,
       idActivo,
       ticketSeleccionado,
+      pagarConTarjeta,
+      devolucionCliente,
       // dataset1,
       // tablaTickets,
     };

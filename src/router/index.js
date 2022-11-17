@@ -57,6 +57,10 @@ const routes = [
           },
         ],
       },
+      {
+        path: "fichajes",
+        component: () => import("../views/FichajesView.vue"),
+      },
     ],
   },
 ];
