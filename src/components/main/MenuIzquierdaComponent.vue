@@ -1,7 +1,9 @@
 <template>
   <div v-if="vistaCliente" class="divInfoModo mb-2">
     <div v-if="cesta" class="modoVenta">
-      {{ cesta.modo }}<br />Sin cliente asignado
+      {{ cesta.modo }}<br />
+      <span v-if="cesta ">{{ cesta.nombreCliente }}</span>
+      <span>Sin cliente asignado</span>
     </div>
   </div>
   <MDBBtnGroup v-if="!vistaCliente" class="shadow-0">
@@ -14,7 +16,10 @@
     <MDBBtn outline="secondary" class="botones ms-1"
       ><MDBIcon icon="search" size="4x"
     /></MDBBtn>
-    <MDBBtn outline="secondary" class="botones ms-1"
+    <MDBBtn
+      outline="secondary"
+      class="botones ms-1"
+      @click="refModalClientes.abrirModal()"
       ><MDBIcon icon="users" size="4x"
     /></MDBBtn>
   </MDBBtnGroup>
@@ -50,22 +55,26 @@
       ><MDBIcon icon="star" size="4x"
     /></MDBBtn>
   </MDBBtnGroup>
+  <ModalClientesComponent ref="refModalClientes" />
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { MDBBtnGroup, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import router from "../../router/index";
+import ModalClientesComponent from "./ModalClientes.vue";
 export default {
   name: "MenuIzquierdaComponent",
   components: {
     MDBBtnGroup,
     MDBBtn,
     MDBIcon,
+    ModalClientesComponent,
   },
   setup() {
     const store = useStore();
+    const refModalClientes = ref(null);
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
     const arrayTrabajadores = computed(
       () => store.state.Trabajadores.arrayTrabajadores
@@ -74,7 +83,6 @@ export default {
     const indexTrabajadorActivo = computed(
       () => store.state.Trabajadores.indexActivo
     );
-    const vistaCliente = ref(false);
 
     const cesta = computed(() => {
       if (arrayCestas.value) {
@@ -88,6 +96,11 @@ export default {
         }
       }
       return null;
+    });
+
+    const vistaCliente = computed(() => {
+      if (cesta.value && cesta.value.idCliente) return true;
+      return false;
     });
 
     function borrarItem() {
@@ -118,6 +131,22 @@ export default {
       router.push(x);
     }
 
+    watch(cesta, () => {
+      console.log("detecto cambio");
+      if (cesta.value && cesta.value.idCliente) {
+        vistaCliente.value = true;
+        console.log("muhahhaha");
+      }
+    });
+
+    watch(arrayTrabajadores, () => {
+      console.log("detecto cambio");
+      if (cesta.value && cesta.value.idCliente) {
+        vistaCliente.value = true;
+        console.log("muhahhaha");
+      }
+    });
+
     return {
       indexActivoCesta,
       borrarItem,
@@ -126,6 +155,7 @@ export default {
       changeVistaCliente,
       cesta,
       goTo,
+      refModalClientes,
     };
   },
 };

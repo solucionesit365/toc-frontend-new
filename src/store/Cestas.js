@@ -45,6 +45,10 @@ export default {
           Swal.fire("Oops...", err.message, "error");
         });
     },
+    setClienteMutation(state, { index, idCliente, nombreCliente }) {
+      state.arrayCestas[index].idCliente = idCliente;
+      state.arrayCestas[index].nombreCliente = nombreCliente;
+    },
   },
   getters: {
     getArrayCestas: (state) => state.arrayCestas,
@@ -61,6 +65,9 @@ export default {
     },
     deleteLista({ commit }, idCesta) {
       commit("deleteListaMutation", idCesta);
+    },
+    setClienteCesta({ commit }, payload) {
+      commit("setClienteMutation", payload);
     },
   },
 };

@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import {
   MDBCard,
   MDBCardHeader,
@@ -39,7 +40,9 @@ import {
   MDBBtn,
   MDBCardFooter,
 } from "mdb-vue-ui-kit";
-import { provide, ref } from "vue";
+import Swal from "sweetalert2";
+import { provide, ref, computed } from "vue";
+import { useStore } from "vuex";
 import NumpadComponent from "../../NumpadComponent.vue";
 export default {
   name: "EntradaComponent",
@@ -52,10 +55,49 @@ export default {
     MDBCardFooter,
   },
   setup() {
+    const store = useStore();
+    const arrayTrabajadores = computed(
+      () => store.state.Trabajadores.arrayTrabajadores
+    );
+    const indexTrabajadorActivo = computed(
+      () => store.state.Trabajadores.indexActivo
+    );
+    const trabajadorActivo = computed(() => {
+      if (
+        arrayTrabajadores.value &&
+        indexTrabajadorActivo.value != null &&
+        indexTrabajadorActivo.value != undefined &&
+        arrayTrabajadores.value[indexTrabajadorActivo.value]
+      ) {
+        return arrayTrabajadores.value[indexTrabajadorActivo.value];
+      }
+      return null;
+    });
     const numpadRef = ref(null);
     const concepto = ref("");
     function confirmarEntrada() {
-      console.log("confirmarEntrada");
+      axios
+        .post("movimientos/nuevoMovimiento", {
+          cantidad: Number(numpadRef.value.cantidad),
+          concepto: concepto.value,
+          idTrabajador: trabajadorActivo.value._id,
+          tipo: "ENTRADA",
+        })
+        .then((res) => {
+          if (res.data) {
+            numpadRef.value.setValor("0");
+            Swal.fire(
+              "Perfecto",
+              "Entrada de dinero realizada correctamente",
+              "success"
+            );
+          } else {
+            throw Error("No se ha podido realizar la entrada de dinero");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
     }
     provide("okValue", confirmarEntrada);
     return {

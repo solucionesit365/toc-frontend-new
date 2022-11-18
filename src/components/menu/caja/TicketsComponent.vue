@@ -19,7 +19,7 @@
           <td>{{ ticket._id }}</td>
           <td>{{ getTiempo(ticket.timestamp) }}</td>
           <td>{{ ticket.tipoPago }}</td>
-          <td>{{ ticket.total }} €</td>
+          <td>{{ ticket.total.toFixed(2) }} €</td>
         </tr>
       </tbody>
     </MDBTable>
@@ -47,7 +47,9 @@
       </table>
       <hr />
       <!-- <p>Forma de pago: {{ ticketSeleccionado.tipoPago }}</p> -->
-      <h1 class="text-center">Total: {{ ticketSeleccionado.total }}</h1>
+      <h1 class="text-center">
+        Total: {{ ticketSeleccionado.total.toFixed(2) }}
+      </h1>
       <MDBBtn
         v-if="ticketSeleccionado.tipoPago === 'EFECTIVO'"
         color="primary"
@@ -102,9 +104,7 @@ export default {
       }
       return null;
     });
-    const arrayTickets = computed(() => {
-      return store.state.Caja.arrayVentas;
-    });
+    const arrayTickets = computed(() => store.state.Caja.arrayVentas);
 
     // const dataset1 = ref({
     //   columns: ["Número ticket", "Hora", "Forma de pago", "Total"],
@@ -122,14 +122,33 @@ export default {
     }
 
     function pagarConTarjeta(idTicket) {
-      axios.post("paytef/cobrarConTarjeta", {
-        idTicket,
-        idTrabajador: trabajadorActivo.value._id,
-      });
+      axios
+        .post("paytef/cobrarConTarjeta", {
+          idTicket,
+          idTrabajador: trabajadorActivo.value._id,
+        })
+        .then((res) => {
+          if (res.data) {
+            ticketSeleccionado.value = null;
+            console.log("Iniciar loader VENTA");
+          }
+        });
+      ticketSeleccionado.value = null;
     }
 
-    function devolucionCliente() {
-      Swal.fire("Oops...", "En construcción", "info");
+    function devolucionCliente(idTicket) {
+      axios
+        .post("paytef/devoluciontTarjeta", {
+          idTicket,
+          idTrabajador: trabajadorActivo.value._id,
+        })
+        .then((res) => {
+          ticketSeleccionado.value = null;
+          if (res.data) console.log("INICIAR LOADER DE DEVOLUCIÓN");
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
     }
 
     // watch(arrayTickets, () => {
@@ -145,6 +164,7 @@ export default {
       if (arrayTickets.value && arrayTickets.value.length > 0) {
         setActivo(arrayTickets.value[0]);
       }
+      console.log(arrayTickets.value);
     });
 
     return {

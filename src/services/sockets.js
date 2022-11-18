@@ -2,6 +2,7 @@ import { io } from "socket.io-client";
 import { useToast } from "vue-toastification";
 import store from "../store/index";
 import router from "../router/index";
+import Swal from "sweetalert2";
 
 const socket = io("http://localhost:5051");
 const toast = useToast();
@@ -98,20 +99,19 @@ socket.on("consultaPaytef", (data) => {
       store.dispatch("Datafono/setEstado", "AGAIN");
     }, 3000);
   }
+});
 
-  // store.dispatch("setEsperandoDatafono", false);
-  // if (data.error === false) {
-  //   store.dispatch("Cestas/setIdAction", -1);
-  //   store.dispatch("setModoActual", "NORMAL");
-  //   store.dispatch("Clientes/resetClienteActivo");
-  //   store.dispatch("Footer/resetMenuActivo");
-  //   router.push({
-  //     name: "Home",
-  //     params: { tipoToast: "success", mensajeToast: "Ticket creado" },
-  //   });
-  // } else {
-  //   toast.error(data.mensaje);
-  // }
+socket.on("consultaPaytefRefund", (data) => {
+  if (data) {
+    Swal.fire("OK", "Devolución aceptada", "success");
+    // store.dispatch("Datafono/setEstado", "APROBADA");
+  } else {
+    Swal.fire("Oops...", "Devolución denegada", "error");
+    // store.dispatch("Datafono/setEstado", "DENEGADA");
+    // setTimeout(() => {
+    //   store.dispatch("Datafono/setEstado", "AGAIN");
+    // }, 3000);
+  }
 });
 
 // socket.on('resPaytef', (data) => {
