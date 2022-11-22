@@ -49,6 +49,9 @@ export default {
       state.arrayCestas[index].idCliente = idCliente;
       state.arrayCestas[index].nombreCliente = nombreCliente;
     },
+    setModoMutation(state, { modo, index }) {
+      state.arrayCestas[index].modo = modo;
+    },
   },
   getters: {
     getArrayCestas: (state) => state.arrayCestas,
@@ -68,6 +71,9 @@ export default {
     },
     setClienteCesta({ commit }, payload) {
       commit("setClienteMutation", payload);
+    },
+    setModoCesta({ commit }, payload) {
+      commit("setModoMutation", payload);
     },
   },
 };

@@ -12,7 +12,7 @@
         <MDBIcon class="mt-3" icon="pause" iconStyle="fas" size="6x" />
       </MDBCardBody>
     </MDBCard>
-    <MDBCard @click="finDeTurno()" class="estiloCard ms-4">
+    <MDBCard @click="preguntarFinalizarTurno()" class="estiloCard ms-4">
       <MDBCardBody class="text-center">
         <MDBCardTitle>Finalizar turno</MDBCardTitle>
         <MDBIcon class="mt-3" icon="stop" iconStyle="fas" size="6x" />
@@ -23,6 +23,7 @@
   <!-- @blur="resetidActivoDescansando" tabindex="0" -->
   <div class="row mt-4">
     <div
+      v-if="arrayTrabajadoresDescanso && arrayTrabajadoresDescanso.length > 0"
       class="col tablaDescansando table-responsive d-inline"
       style="background-color: white"
     >
@@ -48,7 +49,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col">
+    <div class="col anchoCajaConsumoPersonal">
       <MDBBtn
         v-if="trabajadorActivo"
         color="primary"
@@ -170,6 +171,29 @@ export default {
       }
     }
 
+    function activarConsumoPersonal() {
+      store.dispatch("Cestas/setModoCesta", {
+        modo: "CONSUMO_PERSONAL",
+        index: 1,
+      });
+    }
+
+    function preguntarFinalizarTurno() {
+      if (trabajadorActivo.value) {
+        Swal.fire({
+          title: "Confirma. Fin de turno para: ",
+          html: `${trabajadorActivo.value.nombre}`,
+          showCancelButton: true,
+          cancelButtonText: "Cancelar",
+          confirmButtonText: "Confirmar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            finDeTurno();
+          }
+        });
+      }
+    }
+
     function finalDescanso(idTrabajador) {
       axios
         .post("trabajadores/finDescanso", {
@@ -248,6 +272,8 @@ export default {
       iniciarDescanso,
       preguntarFinalDescanso,
       resetidActivoDescansando,
+      preguntarFinalizarTurno,
+      activarConsumoPersonal,
     };
   },
 };
@@ -297,7 +323,16 @@ $anchoTablaDescanso: 50rem;
   font-weight: bold;
 }
 
+.anchoCajaConsumoPersonal {
+  max-width: 25rem;
+}
+
 .tituloDescanso {
   font-size: $sizeFuenteResultados;
+}
+
+.sinCansados {
+  min-height: 60rem;
+  max-height: 60rem;
 }
 </style>

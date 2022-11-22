@@ -188,6 +188,7 @@ import {
 import { useStore } from "vuex";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { useRouter } from "vue-router";
 export default {
   name: "CerrarCajaComponent",
   components: {
@@ -210,6 +211,7 @@ export default {
     const numpadRef = ref(null);
     const numpadRef2 = ref(null);
     const store = useStore();
+    const router = useRouter();
     const infoDinero = ref([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     const modo = ref("Cerrar");
     const modalConfirmar = ref(null);
@@ -347,6 +349,7 @@ export default {
         });
         if (resCierre.data) {
           Swal.fire("Perfecto", "Cierre de caja OK", "success");
+          router.push("/abrirCaja");
         } else {
           throw Error("No se ha podido cerrar la caja");
         }

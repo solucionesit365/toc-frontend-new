@@ -38,6 +38,7 @@
         <MDBIcon icon="trash-alt" size="5x" />
       </MDBSideNavItem>
       <MDBSideNavItem
+        @click="goTo('/menu/pedidos')"
         class="mt-5"
         :class="{
           activo: router.currentRoute.value.path.startsWith('/menu/pedido'),

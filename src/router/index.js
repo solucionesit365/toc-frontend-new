@@ -66,6 +66,11 @@ const routes = [
         path: "fichajes",
         component: () => import("../views/FichajesView.vue"),
       },
+      {
+        path: "pedidos",
+        component: () =>
+          import("../components/menu/pedidos/PedidosComponent.vue"),
+      },
     ],
   },
 ];
