@@ -2,7 +2,7 @@
   <div v-if="vistaCliente" class="divInfoModo mb-2">
     <div v-if="cesta" class="modoVenta">
       {{ cesta.modo }}<br />
-      <span v-if="cesta ">{{ cesta.nombreCliente }}</span>
+      <span v-if="cesta">{{ cesta.nombreCliente }}</span>
       <span>Sin cliente asignado</span>
     </div>
   </div>

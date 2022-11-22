@@ -1,9 +1,8 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 import router from "../router/index";
-import { useToast } from "vue-toastification";
 import { emitSocket } from "./sockets";
 
-const toast = useToast();
 const baseURL = "http://localhost:3000/";
 
 class tocGameV3 {
@@ -12,8 +11,7 @@ class tocGameV3 {
     try {
       return (await axios.get(baseURL + "parametros/todoInstalado")).data;
     } catch (err) {
-      toast.error(err.message);
-      console.log(err);
+      Swal.fire("Oops...", err.message, "error");
       return false;
     }
   }
@@ -23,8 +21,7 @@ class tocGameV3 {
     try {
       return (await axios.get(baseURL + "trabajadores/hayFichados")).data;
     } catch (err) {
-      console.log(err);
-      toast.error(err.message);
+      Swal.fire("Oops...", err.message, "error");
       return false;
     }
   }
@@ -34,8 +31,7 @@ class tocGameV3 {
     try {
       return (await axios.get(baseURL + "caja/estadoCaja")).data;
     } catch (err) {
-      toast.error(err.message);
-      console.log(err);
+      Swal.fire("Oops...", err.message, "error");
       return false;
     }
   }
@@ -45,8 +41,7 @@ class tocGameV3 {
     try {
       return (await axios.post(baseURL + "parametros/getParametros")).data;
     } catch (err) {
-      console.log(err);
-      toast.error(err.message);
+      Swal.fire("Oops...", err.message, "error");
       return null;
     }
   }

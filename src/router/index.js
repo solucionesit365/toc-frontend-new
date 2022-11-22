@@ -7,6 +7,11 @@ const routes = [
     component: LoaderComponent,
   },
   {
+    path: "/installWizard",
+    name: "Install Wizard",
+    component: () => import("../components/InstallWizard.vue"),
+  },
+  {
     path: "/abrirCaja",
     name: "Abrir caja",
     component: () => import("../views/AbrirCajaView.vue"),

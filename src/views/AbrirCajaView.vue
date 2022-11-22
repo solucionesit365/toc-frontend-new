@@ -167,17 +167,17 @@
       </div>
     </MDBModalBody>
   </MDBModal>
-  <ModalClientesComponent ref="ejemplo" />
-  <span v-if="ejemplo"> agujero al child: {{ ejemplo.datoBorrar }}</span>
+  <!-- <ModalClientesComponent ref="ejemplo" /> -->
+  <!-- <span v-if="ejemplo"> agujero al child: {{ ejemplo.datoBorrar }}</span> -->
 </template>
 <script>
-import { ref, computed, onMounted, provide } from "vue";
+import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import router from "../router/index";
 import Swal from "sweetalert2";
 import { MDBModal, MDBModalBody, MDBBtn } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
-import ModalClientesComponent from "../components/main/ModalClientes.vue";
+// import ModalClientesComponent from "../components/main/ModalClientes.vue";
 
 export default {
   name: "AbrirCajaView",
@@ -185,7 +185,7 @@ export default {
     MDBModal,
     MDBModalBody,
     MDBBtn,
-    ModalClientesComponent,
+    // ModalClientesComponent,
   },
   setup() {
     const store = useStore();
@@ -379,10 +379,6 @@ export default {
       );
     }
 
-    function doSomething(x) {
-      console.log("IMPRESIONANTE" + x);
-    }
-
     function abrirModalConfirmacion() {
       modalConfirmacionApertura.value = true;
     }
@@ -392,8 +388,6 @@ export default {
     }
 
     onMounted(() => {
-      // ejemplo.value.abrirModal();
-      console.log(ejemplo.value.datoBorrar);
       axios
         .get("caja/getMonedasUltimoCierre")
         .then((res) => {
@@ -401,9 +395,9 @@ export default {
             infoDinero.value = res.data.array;
           } else {
             Swal.fire(
-              "Error",
-              "No se ha podido cargar la información",
-              "error"
+              "Oops...",
+              "No se ha podido cargar la información (backend)",
+              "warning"
             );
           }
         })
@@ -411,13 +405,13 @@ export default {
           console.log(err);
           Swal.fire(
             "Error",
-            "No se ha podido cargar la información del último cierre",
+            "No se ha podido cargar la información del último cierre (petición)",
             "error"
           );
         });
     });
 
-    provide("doSomething", doSomething);
+    // provide("doSomething", doSomething);
 
     return {
       lolaso,
