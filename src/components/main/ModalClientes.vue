@@ -127,19 +127,6 @@ export default {
       return null;
     });
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
-    // const cesta = computed(() => {
-    //   if (arrayCestas.value) {
-    //     for (let i = 0; i < arrayCestas.value.length; i++) {
-    //       if (
-    //         arrayCestas.value[i]._id ==
-    //         arrayTrabajadores.value[indexTrabajadorActivo.value].idCesta
-    //       ) {
-    //         return arrayCestas.value[i];
-    //       }
-    //     }
-    //   }
-    //   return null;
-    // });
 
     function abrirModal() {
       modalClientes.value = true;
@@ -158,15 +145,14 @@ export default {
               idCliente: idCliente,
               nombreCliente,
             });
+            store.dispatch("EstadoDinamico/setVistaCliente", true);
+
             modalClientes.value = false;
             break;
           }
         }
       }
-      console.log(store.state.Cestas.arrayCestas);
     }
-
-    // const doSomething = inject("doSomething");
 
     function buscar() {
       axios

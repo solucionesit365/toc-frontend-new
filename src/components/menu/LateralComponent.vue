@@ -30,6 +30,7 @@
         <MDBIcon icon="door-open" size="5x" />
       </MDBSideNavItem>
       <MDBSideNavItem
+        @click="activarDevolucion()"
         class="mt-5"
         :class="{
           activo: router.currentRoute.value.path.startsWith('/menu/devolver'),
@@ -76,8 +77,9 @@ import {
   //   MDBBtn,
   MDBIcon,
 } from "mdb-vue-ui-kit";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 export default {
   name: "LateralComponent",
@@ -90,13 +92,52 @@ export default {
   },
   setup() {
     const router = useRouter();
+    const store = useStore();
     const sidenavPositions = ref(true);
     const mode = ref("over");
     const setMode = (value) => {
       mode.value = value;
     };
+
+    const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
+    const arrayTrabajadores = computed(
+      () => store.state.Trabajadores.arrayTrabajadores
+    );
+
+    const indexTrabajadorActivo = computed(
+      () => store.state.Trabajadores.indexActivo
+    );
+    const cesta = computed(() => {
+      if (arrayCestas.value) {
+        for (let i = 0; i < arrayCestas.value.length; i++) {
+          if (
+            arrayCestas.value[i]._id ==
+            arrayTrabajadores.value[indexTrabajadorActivo.value].idCesta
+          ) {
+            return arrayCestas.value[i];
+          }
+        }
+      }
+      return null;
+    });
+
     function goTo(x) {
       router.push(x);
+    }
+
+    function activarDevolucion() {
+      if (arrayCestas.value && cesta.value) {
+        for (let i = 0; i < arrayCestas.value.length; i++) {
+          if (cesta.value._id === arrayCestas.value[i]._id) {
+            store.dispatch("Cestas/setModoCesta", {
+              modo: "DEVOLUCION",
+              index: i,
+            });
+            router.push("/main");
+            break;
+          }
+        }
+      }
     }
 
     return {
@@ -105,6 +146,7 @@ export default {
       setMode,
       router,
       goTo,
+      activarDevolucion,
     };
   },
 };

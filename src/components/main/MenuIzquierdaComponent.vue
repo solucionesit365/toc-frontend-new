@@ -3,7 +3,7 @@
     <div v-if="cesta" class="modoVenta">
       {{ cesta.modo }}<br />
       <span v-if="cesta">{{ cesta.nombreCliente }}</span>
-      <span>Sin cliente asignado</span>
+      <span v-else>Sin cliente asignado</span>
     </div>
   </div>
   <MDBBtnGroup v-if="!vistaCliente" class="shadow-0">
@@ -45,7 +45,7 @@
     <MDBBtn v-else outline="secondary" class="botones" @click="borrarItem()"
       ><MDBIcon icon="times" size="4x"
     /></MDBBtn>
-    <MDBBtn outline="secondary" class="botones ms-1"
+    <MDBBtn @click="resetGeneral()" outline="secondary" class="botones ms-1"
       ><MDBIcon icon="undo" size="4x"
     /></MDBBtn>
     <MDBBtn
@@ -75,6 +75,9 @@ export default {
   setup() {
     const store = useStore();
     const refModalClientes = ref(null);
+    const vistaCliente = computed(
+      () => store.state.EstadoDinamico.vistaCliente
+    );
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
     const arrayTrabajadores = computed(
       () => store.state.Trabajadores.arrayTrabajadores
@@ -98,11 +101,6 @@ export default {
       return null;
     });
 
-    const vistaCliente = computed(() => {
-      if (cesta.value && cesta.value.idCliente) return true;
-      return false;
-    });
-
     function borrarItem() {
       if (
         indexActivoCesta.value != null &&
@@ -121,14 +119,31 @@ export default {
 
     function changeVistaCliente() {
       if (vistaCliente.value) {
-        vistaCliente.value = false;
+        store.dispatch("EstadoDinamico/setVistaCliente", false);
       } else {
-        vistaCliente.value = true;
+        store.dispatch("EstadoDinamico/setVistaCliente", true);
       }
     }
 
     function goTo(x) {
       router.push(x);
+    }
+
+    function resetGeneral() {
+      if (arrayCestas.value && cesta.value) {
+        for (let i = 0; i < arrayCestas.value.length; i++) {
+          if (arrayCestas.value[i]._id === cesta.value._id) {
+            store.dispatch("Cestas/setModoCesta", { index: i, modo: "VENTA" });
+            store.dispatch("Cestas/setClienteCesta", {
+              index: i,
+              idCliente: null,
+              nombreCliente: null,
+            });
+            store.dispatch("EstadoDinamico/reset");
+            break;
+          }
+        }
+      }
     }
 
     watch(cesta, () => {
@@ -156,6 +171,7 @@ export default {
       cesta,
       goTo,
       refModalClientes,
+      resetGeneral,
     };
   },
 };

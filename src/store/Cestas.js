@@ -48,9 +48,11 @@ export default {
     setClienteMutation(state, { index, idCliente, nombreCliente }) {
       state.arrayCestas[index].idCliente = idCliente;
       state.arrayCestas[index].nombreCliente = nombreCliente;
+      sincronizarCestaInverso(state.arrayCestas[index]);
     },
     setModoMutation(state, { modo, index }) {
       state.arrayCestas[index].modo = modo;
+      sincronizarCestaInverso(state.arrayCestas[index]);
     },
   },
   getters: {
@@ -77,3 +79,18 @@ export default {
     },
   },
 };
+
+function sincronizarCestaInverso(cesta) {
+  axios
+    .post("cestas/updateCestaInverso", {
+      cesta,
+    })
+    .then((res) => {
+      if (!res.data) {
+        throw Error("No se ha podido actualizar la cesta en el servidor");
+      }
+    })
+    .catch((err) => {
+      Swal.fire("Oops...", err.message, "error");
+    });
+}
