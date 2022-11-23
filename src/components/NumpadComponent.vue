@@ -93,15 +93,18 @@
       </button>
     </div>
   </div>
+  {{ props }}
 </template>
 
 <script>
-import { ref, inject } from "vue";
+import { ref, inject, onMounted } from "vue";
 export default {
   name: "NumpadComponent",
-  setup(_props, { expose }) {
+  setup(props, { expose }) {
     const cantidad = ref("0");
     const okValue = inject("okValue");
+    const anchoTecla = ref("5.5rem");
+    const altoTecla = ref("5.5rem");
 
     function addTecla(x) {
       cantidad.value += x;
@@ -117,9 +120,20 @@ export default {
       cantidad.value = aLaVez.toString();
     }
 
+    function setSizesBotones(x, y) {
+      console.log("me están llamando wey");
+      anchoTecla.value = x + "rem";
+      altoTecla.value = y + "rem";
+    }
+
+    onMounted(() => {
+      console.log(props);
+    });
+
     expose({
       cantidad,
       setValor,
+      setSizesBotones,
     });
 
     return {
@@ -128,17 +142,24 @@ export default {
       addTecla,
       deleteTecla,
       setValor,
+      anchoTecla,
+      altoTecla,
+      setSizesBotones,
+      props,
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
+/* $anchoTecla: v-bind("anchoTecla");
+$altoTecla: 5.5rem;
+$sizeFuente: 2.5rem; */
 .botonNumpad {
-  min-width: 5.5rem;
-  max-width: 5.5rem;
-  min-height: 5.5rem;
-  max-height: 5.5rem;
+  min-width: v-bind("anchoTecla");
+  max-width: v-bind("anchoTecla");
+  min-height: v-bind("altoTecla");
+  max-height: v-bind("altoTecla");
   font-size: 2.5rem;
   font-weight: bold;
   color: #606060 !important;

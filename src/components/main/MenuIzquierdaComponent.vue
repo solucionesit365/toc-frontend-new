@@ -37,7 +37,10 @@
       @click="goTo('/menu/caja/tickets')"
       ><MDBIcon icon="bars" size="4x"
     /></MDBBtn>
-    <MDBBtn outline="secondary" class="botones ms-1"
+    <MDBBtn
+      @click="refModalArticulos.abrirModal()"
+      outline="secondary"
+      class="botones ms-1"
       ><MDBIcon icon="search" size="4x"
     /></MDBBtn>
     <MDBBtn
@@ -51,7 +54,10 @@
     <MDBBtn outline="secondary" class="botones"
       ><MDBIcon icon="print" size="4x"
     /></MDBBtn>
-    <MDBBtn outline="secondary" class="botones ms-1"
+    <MDBBtn
+      @click="refModalUnidades.abrirModal()"
+      outline="secondary"
+      class="botones ms-1"
       ><MDBIcon icon="calculator" size="4x"
     /></MDBBtn>
     <MDBBtn @click="goTo('/cestas')" outline="secondary" class="botones ms-1"
@@ -80,6 +86,8 @@
     /></MDBBtn>
   </MDBBtnGroup>
   <ModalClientesComponent ref="refModalClientes" />
+  <ModalArticulosComponent ref="refModalArticulos" />
+  <ModalUnidadesComponent ref="refModalUnidades" />
 </template>
 
 <script>
@@ -88,6 +96,8 @@ import { MDBBtnGroup, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import router from "../../router/index";
 import ModalClientesComponent from "./ModalClientes.vue";
+import ModalArticulosComponent from "./ModalArticulos.vue";
+import ModalUnidadesComponent from "./UnidadesComponent.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 export default {
@@ -97,10 +107,14 @@ export default {
     MDBBtn,
     MDBIcon,
     ModalClientesComponent,
+    ModalArticulosComponent,
+    ModalUnidadesComponent,
   },
   setup() {
     const store = useStore();
     const refModalClientes = ref(null);
+    const refModalArticulos = ref(null);
+    const refModalUnidades = ref(null);
     const vistaEspecial = computed(
       () => store.state.EstadoDinamico.vistaEspecial
     );
@@ -187,23 +201,6 @@ export default {
       }
     }
 
-    // watch(cesta, () => {
-    //   console.log("detecto cambio");
-    //   if (cesta.value && cesta.value.idCliente) {
-    //     vistaEspecial.value = true;
-    //     console.log("muhahhaha");
-    //   }
-    // });
-
-    // watch(arrayTrabajadores, () => {
-    //   console.log("detecto cambio");
-    //   if (cesta.value && cesta.value.idCliente) {
-    //     vistaEspecial.value = true;
-    //     store.dispatch("EstadoDinamico/setVistaCliente", true);
-    //     console.log("muhahhaha");
-    //   }
-    // });
-
     onMounted(() => {
       if (
         cesta.value &&
@@ -222,6 +219,8 @@ export default {
       cesta,
       goTo,
       refModalClientes,
+      refModalArticulos,
+      refModalUnidades,
       resetGeneral,
       consultarPuntos,
     };
