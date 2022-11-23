@@ -77,6 +77,7 @@ import { useStore } from "vuex";
 import moment from "moment";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { socket } from "@/services/sockets";
 export default {
   name: "TicketsComponent",
   components: {
@@ -122,23 +123,17 @@ export default {
     }
 
     function pagarConTarjeta(idTicket) {
-      axios
-        .post("paytef/cobrarConTarjeta", {
-          idTicket,
-          idTrabajador: trabajadorActivo.value._id,
-        })
-        .then((res) => {
-          if (res.data) {
-            ticketSeleccionado.value = null;
-            console.log("Iniciar loader VENTA");
-          }
-        });
+      socket.emit("iniciarTransaccion", {
+        idTicket,
+        idTrabajador: trabajadorActivo.value._id,
+      });
+
       ticketSeleccionado.value = null;
     }
 
     function devolucionCliente(idTicket) {
       axios
-        .post("paytef/devoluciontTarjeta", {
+        .post("paytef/devolucionTarjeta", {
           idTicket,
           idTrabajador: trabajadorActivo.value._id,
         })

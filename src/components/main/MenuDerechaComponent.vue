@@ -71,7 +71,7 @@
       v-if="cesta && getTotal(cesta) > 0"
       outline="primary"
       class="botonPagar"
-      @click="goTo('/cobro')"
+      @click="handleCobro()"
     >
       <MDBIcon icon="hand-holding-usd" size="5x" />
       <span class="letraTotal ms-3 mt-2">
@@ -189,6 +189,33 @@ export default {
         });
     }
 
+    function handleCobro() {
+      if (cesta.value) {
+        if (cesta.value.modo === "VENTA") {
+          goTo("/cobro");
+        } else if (cesta.value.modo === "DEVOLUCION") {
+          axios
+            .post("devoluciones/nuevaDevolucion", {
+              total: getTotal(cesta.value),
+              idCesta: cesta.value._id,
+              idTrabajador: trabajadorActivo.value._id,
+            })
+            .then((res) => {
+              if (res.data) {
+                Swal.fire("OK", "Devolución creada correctamente", "success");
+              } else {
+                throw Error("No se ha podido crear la devolución");
+              }
+            })
+            .catch((err) => {
+              Swal.fire("Oops...", err.message, "error");
+            });
+        }
+      } else {
+        Swal.fire("Oops...", "El modo de la cesta es incorrecto", "error");
+      }
+    }
+
     onMounted(() => {
       actualizarMesas();
     });
@@ -202,6 +229,7 @@ export default {
       goTo,
       abrirCajon,
       tarjetaUltimoTicket,
+      handleCobro,
     };
   },
 };

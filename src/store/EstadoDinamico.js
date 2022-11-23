@@ -1,14 +1,14 @@
 export default {
   namespaced: true,
   state: {
-    vistaCliente: false,
+    vistaEspecial: false,
   },
   mutations: {
     setVistaClienteMutation(state, payload) {
-      state.vistaCliente = payload;
+      state.vistaEspecial = payload;
     },
     resetMutation(state) {
-      state.vistaCliente = false;
+      state.vistaEspecial = false;
     },
   },
   getters: {},

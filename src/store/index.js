@@ -9,7 +9,7 @@ import EstadoDinamico from "./EstadoDinamico";
 
 export default createStore({
   state: {
-    vistaCliente: false,
+    vistaEspecial: false,
   },
   getters: {},
   mutations: {},

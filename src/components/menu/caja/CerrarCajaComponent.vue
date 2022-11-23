@@ -142,7 +142,7 @@
         <div class="col">
           <div class="input-group input-group-lg">
             <span class="input-group-text" id="inputGroup-sizing-lg"
-              >Cantidad 3G</span
+              >Datáfono manual</span
             >
             <input
               v-if="numpadRef2"

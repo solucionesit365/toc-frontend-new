@@ -1,12 +1,36 @@
 <template>
-  <div v-if="vistaCliente" class="divInfoModo mb-2">
-    <div v-if="cesta" class="modoVenta">
-      {{ cesta.modo }}<br />
-      <span v-if="cesta">{{ cesta.nombreCliente }}</span>
-      <span v-else>Sin cliente asignado</span>
+  <div
+    v-if="vistaEspecial && cesta"
+    class="divInfoModo mb-2"
+    :class="{
+      fondoDevolucion: cesta.modo == 'DEVOLUCION',
+      fondoCliente: cesta.idCliente,
+    }"
+  >
+    <div>
+      <span class="modoVenta d-block text-center">{{ cesta.modo }}</span>
+      <div
+        v-if="cesta.idCliente"
+        class="d-block textoNombreCliente text-center"
+      >
+        <span class="text-truncate" style="max-width: 10rem">{{
+          cesta.nombreCliente
+        }}</span>
+        <MDBBtn
+          @click="consultarPuntos(cesta.idCliente)"
+          class="d-block mx-auto w-100"
+          size="lg"
+          color="primary"
+          >Consultar puntos</MDBBtn
+        >
+      </div>
+
+      <span v-else class="d-block text-center textoNombreCliente"
+        >Sin cliente asignado</span
+      >
     </div>
   </div>
-  <MDBBtnGroup v-if="!vistaCliente" class="shadow-0">
+  <MDBBtnGroup v-if="!vistaEspecial" class="shadow-0">
     <MDBBtn
       outline="secondary"
       class="botones"
@@ -23,7 +47,7 @@
       ><MDBIcon icon="users" size="4x"
     /></MDBBtn>
   </MDBBtnGroup>
-  <MDBBtnGroup v-if="!vistaCliente" class="shadow-0 mt-1">
+  <MDBBtnGroup v-if="!vistaEspecial" class="shadow-0 mt-1">
     <MDBBtn outline="secondary" class="botones"
       ><MDBIcon icon="print" size="4x"
     /></MDBBtn>
@@ -59,11 +83,13 @@
 </template>
 
 <script>
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { MDBBtnGroup, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import router from "../../router/index";
 import ModalClientesComponent from "./ModalClientes.vue";
+import axios from "axios";
+import Swal from "sweetalert2";
 export default {
   name: "MenuIzquierdaComponent",
   components: {
@@ -75,8 +101,8 @@ export default {
   setup() {
     const store = useStore();
     const refModalClientes = ref(null);
-    const vistaCliente = computed(
-      () => store.state.EstadoDinamico.vistaCliente
+    const vistaEspecial = computed(
+      () => store.state.EstadoDinamico.vistaEspecial
     );
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
     const arrayTrabajadores = computed(
@@ -118,7 +144,7 @@ export default {
     }
 
     function changeVistaCliente() {
-      if (vistaCliente.value) {
+      if (vistaEspecial.value) {
         store.dispatch("EstadoDinamico/setVistaCliente", false);
       } else {
         store.dispatch("EstadoDinamico/setVistaCliente", true);
@@ -127,6 +153,21 @@ export default {
 
     function goTo(x) {
       router.push(x);
+    }
+
+    function consultarPuntos(idCliente) {
+      axios
+        .post("clientes/consultarPuntos", { idCliente })
+        .then((res) => {
+          if (typeof res.data === "number") {
+            Swal.fire(`Puntos: ${res.data}`, "", "info");
+          } else {
+            throw Error("No se ha podido obtener la información del cliente");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
     }
 
     function resetGeneral() {
@@ -146,19 +187,29 @@ export default {
       }
     }
 
-    watch(cesta, () => {
-      console.log("detecto cambio");
-      if (cesta.value && cesta.value.idCliente) {
-        vistaCliente.value = true;
-        console.log("muhahhaha");
-      }
-    });
+    // watch(cesta, () => {
+    //   console.log("detecto cambio");
+    //   if (cesta.value && cesta.value.idCliente) {
+    //     vistaEspecial.value = true;
+    //     console.log("muhahhaha");
+    //   }
+    // });
 
-    watch(arrayTrabajadores, () => {
-      console.log("detecto cambio");
-      if (cesta.value && cesta.value.idCliente) {
-        vistaCliente.value = true;
-        console.log("muhahhaha");
+    // watch(arrayTrabajadores, () => {
+    //   console.log("detecto cambio");
+    //   if (cesta.value && cesta.value.idCliente) {
+    //     vistaEspecial.value = true;
+    //     store.dispatch("EstadoDinamico/setVistaCliente", true);
+    //     console.log("muhahhaha");
+    //   }
+    // });
+
+    onMounted(() => {
+      if (
+        cesta.value &&
+        (cesta.value.idCliente || cesta.value.modo != "VENTA")
+      ) {
+        store.dispatch("EstadoDinamico/setVistaCliente", true);
       }
     });
 
@@ -166,12 +217,13 @@ export default {
       indexActivoCesta,
       borrarItem,
       borrarLista,
-      vistaCliente,
+      vistaEspecial,
       changeVistaCliente,
       cesta,
       goTo,
       refModalClientes,
       resetGeneral,
+      consultarPuntos,
     };
   },
 };
@@ -196,6 +248,14 @@ $sizeHeight: 5rem;
 .modoVenta {
   font-size: 2rem;
   font-weight: bold;
-  text-align: center;
+}
+.textoNombreCliente {
+  font-size: 1rem;
+}
+.fondoDevolucion {
+  background-color: #ffb5b5 !important;
+}
+.fondoCliente {
+  background-color: #caffcc;
 }
 </style>
