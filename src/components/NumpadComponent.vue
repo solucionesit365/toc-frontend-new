@@ -93,14 +93,13 @@
       </button>
     </div>
   </div>
-  {{ props }}
 </template>
 
 <script>
-import { ref, inject, onMounted } from "vue";
+import { ref, inject } from "vue";
 export default {
   name: "NumpadComponent",
-  setup(props, { expose }) {
+  setup(_props, { expose }) {
     const cantidad = ref("0");
     const okValue = inject("okValue");
     const anchoTecla = ref("5.5rem");
@@ -120,20 +119,9 @@ export default {
       cantidad.value = aLaVez.toString();
     }
 
-    function setSizesBotones(x, y) {
-      console.log("me están llamando wey");
-      anchoTecla.value = x + "rem";
-      altoTecla.value = y + "rem";
-    }
-
-    onMounted(() => {
-      console.log(props);
-    });
-
     expose({
       cantidad,
       setValor,
-      setSizesBotones,
     });
 
     return {
@@ -144,8 +132,6 @@ export default {
       setValor,
       anchoTecla,
       altoTecla,
-      setSizesBotones,
-      props,
     };
   },
 };
@@ -156,10 +142,10 @@ export default {
 $altoTecla: 5.5rem;
 $sizeFuente: 2.5rem; */
 .botonNumpad {
-  min-width: v-bind("anchoTecla");
-  max-width: v-bind("anchoTecla");
-  min-height: v-bind("altoTecla");
-  max-height: v-bind("altoTecla");
+  min-width: 5.5rem;
+  max-width: 5.5rem;
+  min-height: 5.5rem;
+  max-height: 5.5rem;
   font-size: 2.5rem;
   font-weight: bold;
   color: #606060 !important;

@@ -210,6 +210,8 @@ export default {
             .catch((err) => {
               Swal.fire("Oops...", err.message, "error");
             });
+        } else if (cesta.value.modo === "CONSUMO_PERSONAL") {
+          console.log("Consumo personal keje");
         }
       } else {
         Swal.fire("Oops...", "El modo de la cesta es incorrecto", "error");

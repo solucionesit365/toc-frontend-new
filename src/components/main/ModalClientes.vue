@@ -87,13 +87,7 @@
 import axios from "axios";
 import { MDBModal, MDBModalBody, MDBBtn } from "mdb-vue-ui-kit";
 import Swal from "sweetalert2";
-import {
-  ref,
-  // inject,
-  onMounted,
-  watch,
-  computed,
-} from "vue";
+import { ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -172,11 +166,6 @@ export default {
     context.expose({
       abrirModal,
       datoBorrar,
-    });
-
-    onMounted(() => {
-      // doSomething("jajj");
-      console.log("bienvenido a mi componente");
     });
 
     return {

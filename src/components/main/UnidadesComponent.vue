@@ -10,7 +10,7 @@
         Introduce las unidades y marca un artículo
       </MDBModalTitle>
     </MDBModalHeader>
-    <MDBModalBody class="mx-auto">
+    <MDBModalBody>
       <div class="row">
         <input
           v-if="refUnidadesComponent"
@@ -20,8 +20,10 @@
           v-model="refUnidadesComponent.cantidad"
         />
       </div>
-      <div class="row d-block">
-        <NumpadComponent lol-message="8" ref="refUnidadesComponent" />
+      <div class="row">
+        <div class="text-center">
+          <NumpadComponent ref="refUnidadesComponent" />
+        </div>
       </div>
     </MDBModalBody>
   </MDBModal>
@@ -36,6 +38,7 @@ import {
   MDBModalHeader,
   MDBModalTitle,
 } from "mdb-vue-ui-kit";
+import { useStore } from "vuex";
 export default {
   name: "UnidadesComponent",
   components: {
@@ -48,13 +51,15 @@ export default {
   setup() {
     const refUnidadesComponent = ref(null);
     const modalUnidades = ref(null);
+    const store = useStore();
 
     function abrirModal() {
       modalUnidades.value = true;
     }
 
-    function clickOk() {
-      console.log("OK");
+    function clickOk(x) {
+      store.dispatch("Unidades/setUnidades", x);
+      modalUnidades.value = false;
     }
 
     provide("okValue", clickOk);

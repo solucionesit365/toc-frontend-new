@@ -1,7 +1,7 @@
 <template>
   <MenusComponent />
   <SubmenusComponent />
-  <TeclasComponent />
+  <TeclasComponent ref="refTeclasComponent" />
   <div class="row mt-1">
     <div class="col-md-3">
       <MenuIzquierdaComponent />
@@ -22,6 +22,8 @@ import TeclasComponent from "@/components/main/TeclasComponent.vue";
 import CestaComponent from "@/components/main/CestaComponent.vue";
 import MenuIzquierdaComponent from "@/components/main/MenuIzquierdaComponent.vue";
 import MenuDerechaComponent from "@/components/main/MenuDerechaComponent.vue";
+import { provide, ref } from "vue";
+
 export default {
   name: "MainView",
   components: {
@@ -31,6 +33,18 @@ export default {
     CestaComponent,
     MenuIzquierdaComponent,
     MenuDerechaComponent,
+  },
+  setup() {
+    const refTeclasComponent = ref(null);
+
+    function clickTecla(item) {
+      refTeclasComponent.value.clickTecla(item);
+    }
+
+    provide("clickTecla", clickTecla);
+    return {
+      refTeclasComponent,
+    };
   },
 };
 </script>

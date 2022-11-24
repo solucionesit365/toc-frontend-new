@@ -6,6 +6,7 @@ import Teclado from "./Teclado";
 import Configuracion from "./Configuracion";
 import Datafono from "./Datafono";
 import EstadoDinamico from "./EstadoDinamico";
+import Unidades from "./Unidades";
 
 export default createStore({
   state: {
@@ -22,5 +23,6 @@ export default createStore({
     Configuracion,
     Datafono,
     EstadoDinamico,
+    Unidades,
   },
 });

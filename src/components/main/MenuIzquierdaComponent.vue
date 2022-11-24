@@ -188,6 +188,7 @@ export default {
       if (arrayCestas.value && cesta.value) {
         for (let i = 0; i < arrayCestas.value.length; i++) {
           if (arrayCestas.value[i]._id === cesta.value._id) {
+            store.dispatch("Unidades/setUnidades", 1);
             store.dispatch("Cestas/setModoCesta", { index: i, modo: "VENTA" });
             store.dispatch("Cestas/setClienteCesta", {
               index: i,

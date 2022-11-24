@@ -52,6 +52,7 @@
     <div class="col anchoCajaConsumoPersonal">
       <MDBBtn
         v-if="trabajadorActivo"
+        @click="activarConsumoPersonal()"
         color="primary"
         class="w-100 botonConsumoPersonal"
         >Consumo personal</MDBBtn
@@ -82,6 +83,7 @@ import Swal from "sweetalert2";
 import { onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
 import FichajesModal from "../components/menu/fichajes/FichajesModal.vue";
+import router from "@/router";
 export default {
   name: "fichajesView",
   components: {
@@ -111,6 +113,22 @@ export default {
         arrayTrabajadores.value[indexTrabajadorActivo.value]
       ) {
         return arrayTrabajadores.value[indexTrabajadorActivo.value];
+      }
+      return null;
+    });
+
+    const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
+
+    const cesta = computed(() => {
+      if (arrayCestas.value) {
+        for (let i = 0; i < arrayCestas.value.length; i++) {
+          if (
+            arrayCestas.value[i]._id ==
+            arrayTrabajadores.value[indexTrabajadorActivo.value].idCesta
+          ) {
+            return arrayCestas.value[i];
+          }
+        }
       }
       return null;
     });
@@ -172,10 +190,18 @@ export default {
     }
 
     function activarConsumoPersonal() {
-      store.dispatch("Cestas/setModoCesta", {
-        modo: "CONSUMO_PERSONAL",
-        index: 1,
-      });
+      if (arrayCestas.value && cesta.value) {
+        for (let i = 0; i < arrayCestas.value.length; i++) {
+          if (arrayCestas.value[i]._id === cesta.value._id) {
+            store.dispatch("Cestas/setModoCesta", {
+              modo: "CONSUMO_PERSONAL",
+              index: i,
+            });
+            router.push("/main");
+            break;
+          }
+        }
+      }
     }
 
     function preguntarFinalizarTurno() {

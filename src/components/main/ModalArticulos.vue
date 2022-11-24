@@ -44,7 +44,12 @@
                     <MDBBtn
                       color="primary"
                       size="lg"
-                      @click="selectArticulo(articulo.id, articulo.nombre)"
+                      @click="
+                        selectArticulo({
+                          idArticle: articulo._id,
+                          esSumable: articulo.esSumable,
+                        })
+                      "
                       class="w-100"
                       style="height: 3.85rem; font-size: 1.5rem"
                       >Seleccionar</MDBBtn
@@ -72,14 +77,7 @@
 import axios from "axios";
 import { MDBModal, MDBModalBody, MDBBtn } from "mdb-vue-ui-kit";
 import Swal from "sweetalert2";
-import {
-  ref,
-  // inject,
-  onMounted,
-  watch,
-  computed,
-} from "vue";
-import { useStore } from "vuex";
+import { ref, inject, watch } from "vue";
 
 export default {
   name: "ModalArticulosComponent",
@@ -89,29 +87,18 @@ export default {
     MDBBtn,
   },
   setup(_props, context) {
-    const store = useStore();
+    // const store = useStore();
     const modalArticulos = ref(false);
     const datoBorrar = ref(0);
     const inputBusqueda = ref("");
     const arrayArticulos = ref();
-    const arrayTrabajadores = computed(
-      () => store.state.Trabajadores.arrayTrabajadores
-    );
-    const indexTrabajadorActivo = computed(
-      () => store.state.Trabajadores.indexActivo
-    );
-    const trabajadorActivo = computed(() => {
-      if (
-        arrayTrabajadores.value &&
-        indexTrabajadorActivo.value != undefined &&
-        indexTrabajadorActivo.value != null &&
-        arrayTrabajadores.value[indexTrabajadorActivo.value]
-      ) {
-        return arrayTrabajadores.value[indexTrabajadorActivo.value];
-      }
-      return null;
-    });
-    const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
+
+    const clickTecla = inject("clickTecla");
+
+    function selectArticulo(data) {
+      clickTecla(data);
+      modalArticulos.value = false;
+    }
 
     function abrirModal() {
       modalArticulos.value = true;
@@ -119,23 +106,6 @@ export default {
 
     function test() {
       datoBorrar.value++;
-    }
-
-    function selectArticulo(idArticulo) {
-      if (arrayCestas.value) {
-        for (let i = 0; i < arrayCestas.value.length; i++) {
-          if (trabajadorActivo.value.idCesta === arrayCestas.value[i]._id) {
-            store.dispatch("Cestas/setClienteCesta", {
-              index: i,
-              idArticulo: idArticulo,
-            });
-            store.dispatch("EstadoDinamico/setVistaCliente", true);
-
-            modalArticulos.value = false;
-            break;
-          }
-        }
-      }
     }
 
     function buscar() {
@@ -158,19 +128,14 @@ export default {
       datoBorrar,
     });
 
-    onMounted(() => {
-      // doSomething("jajj");
-      console.log("bienvenido a mi componente");
-    });
-
     return {
       test,
       datoBorrar,
       modalArticulos,
       inputBusqueda,
       arrayArticulos,
-      selectArticulo,
       buscar,
+      selectArticulo,
     };
   },
 };

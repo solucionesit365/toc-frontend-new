@@ -64,7 +64,7 @@ export default {
   components: {
     PesoComponent,
   },
-  setup() {
+  setup(_props, { expose }) {
     const store = useStore();
     const teclado = computed(() => store.state.Teclado.objTeclado);
     const indexMenuActivo = computed(() => store.state.Teclado.indexMenuActivo);
@@ -79,7 +79,7 @@ export default {
       () => store.state.Teclado.indexSubmenuActivo
     );
     const modalPesoRef = ref(null);
-    const unidadesAplicar = ref(1);
+    const unidadesAplicar = computed(() => store.state.Unidades.unidades);
 
     const cesta = computed(() => {
       if (arrayCestas.value) {
@@ -125,8 +125,8 @@ export default {
               unidades: unidadesAplicar.value,
               arraySuplementos: null,
             });
-            if (!resClick.data)
-              throw Error("No se ha podido añadir el artículo a la cesta");
+            if (resClick.data) store.dispatch("Unidades/setUnidades", 1);
+            else throw Error("No se ha podido añadir el artículo a la cesta");
           }
         } else {
           modalPesoRef.value.abrirModal();
@@ -221,6 +221,9 @@ export default {
     }
 
     provide("addItem", addItem);
+    expose({
+      clickTecla,
+    });
 
     return {
       teclado,
