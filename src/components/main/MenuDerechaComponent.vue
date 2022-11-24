@@ -95,7 +95,7 @@
 
 <script>
 import { useStore } from "vuex";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, inject } from "vue";
 import { MDBIcon, MDBBtn } from "mdb-vue-ui-kit";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -111,6 +111,7 @@ export default {
     const store = useStore();
     const router = useRouter();
     const arrayMesas = ref([]);
+    const resetGeneral = inject("resetGeneral");
     const arrayTrabajadores = computed(
       () => store.state.Trabajadores.arrayTrabajadores
     );
@@ -211,7 +212,26 @@ export default {
               Swal.fire("Oops...", err.message, "error");
             });
         } else if (cesta.value.modo === "CONSUMO_PERSONAL") {
-          console.log("Consumo personal keje");
+          axios
+            .post("tickets/crearTicket", {
+              total: getTotal(cesta.value),
+              idCesta: cesta.value._id,
+              idTrabajador: trabajadorActivo.value._id,
+              tipo: "CONSUMO_PERSONAL",
+            })
+            .then((resCrearTicket) => {
+              if (resCrearTicket.data) {
+                resetGeneral();
+                Swal.fire("Perfecto", "Consumo personal registrado", "success");
+              } else {
+                throw Error(
+                  "No se ha podido crear el ticket de consumo personal"
+                );
+              }
+            })
+            .catch((err) => {
+              Swal.fire("Oops...", err.message, "error");
+            });
         }
       } else {
         Swal.fire("Oops...", "El modo de la cesta es incorrecto", "error");

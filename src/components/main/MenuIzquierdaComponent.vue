@@ -110,7 +110,7 @@ export default {
     ModalArticulosComponent,
     ModalUnidadesComponent,
   },
-  setup() {
+  setup(_props, { expose }) {
     const store = useStore();
     const refModalClientes = ref(null);
     const refModalArticulos = ref(null);
@@ -201,6 +201,10 @@ export default {
         }
       }
     }
+
+    expose({
+      resetGeneral,
+    });
 
     onMounted(() => {
       if (

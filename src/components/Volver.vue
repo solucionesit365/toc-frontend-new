@@ -1,5 +1,5 @@
 <template>
-  <div class="input-group position-absolute bottom-0 start-0 mb-3 ms-2">
+  <div class="input-group position-absolute bottom-0 start-0">
     <button
       @click="volver()"
       class="btn btn-warning ms-2"

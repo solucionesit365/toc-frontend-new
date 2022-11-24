@@ -4,7 +4,7 @@
   <TeclasComponent ref="refTeclasComponent" />
   <div class="row mt-1">
     <div class="col-md-3">
-      <MenuIzquierdaComponent />
+      <MenuIzquierdaComponent ref="refMenuIzquierda" />
     </div>
     <div class="col-md-6">
       <CestaComponent />
@@ -36,14 +36,21 @@ export default {
   },
   setup() {
     const refTeclasComponent = ref(null);
+    const refMenuIzquierda = ref(null);
 
     function clickTecla(item) {
       refTeclasComponent.value.clickTecla(item);
     }
 
+    function resetGeneral() {
+      refMenuIzquierda.value.resetGeneral();
+    }
+
     provide("clickTecla", clickTecla);
+    provide("resetGeneral", resetGeneral);
     return {
       refTeclasComponent,
+      refMenuIzquierda,
     };
   },
 };

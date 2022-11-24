@@ -47,26 +47,11 @@
       >
         <MDBIcon icon="globe" size="5x" />
       </MDBSideNavItem>
-      <MDBSideNavItem
-        class="mt-5"
-        :class="{ activo: router.currentRoute.value.path == '/menu/algo' }"
-      >
-        <MDBIcon icon="clipboard-list" size="5x" />
+      <MDBSideNavItem @click="goTo('/tecnico')" class="mt-5">
+        <MDBIcon icon="key" size="5x" />
       </MDBSideNavItem>
     </MDBSideNavMenu>
   </MDBSideNav>
-  <!-- <div id="wow">
-    lolaso guapo<MDBBtn
-      color="primary"
-      aria-controls="#sidenavPositions"
-      @click="sidenavPositions = !sidenavPositions"
-    >
-      <MDBIcon icon="bars" />
-    </MDBBtn>
-  </div>
-
-
-  {{ router.currentRoute.value.path }} -->
 </template>
 
 <script>

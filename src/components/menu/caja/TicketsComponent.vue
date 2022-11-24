@@ -107,11 +107,6 @@ export default {
     });
     const arrayTickets = computed(() => store.state.Caja.arrayVentas);
 
-    // const dataset1 = ref({
-    //   columns: ["Número ticket", "Hora", "Forma de pago", "Total"],
-    //   rows: [],
-    // });
-
     function getTiempo(x) {
       const fecha = new Date(x);
       return moment(fecha).format("HH:ss DD/MM/YYYY");
@@ -146,20 +141,10 @@ export default {
         });
     }
 
-    // watch(arrayTickets, () => {
-    //   arrayTickets.value.forEach((ticket) => {
-    //     dataset1.value.rows.push([ticket._id, 123456, "TARJETA", 69.69]);
-    //   });
-    // });
-
     onMounted(() => {
-      // arrayTickets.value.forEach((ticket) => {
-      //   setActivo(arra);
-      // });
       if (arrayTickets.value && arrayTickets.value.length > 0) {
         setActivo(arrayTickets.value[0]);
       }
-      console.log(arrayTickets.value);
     });
 
     return {
@@ -170,8 +155,6 @@ export default {
       ticketSeleccionado,
       pagarConTarjeta,
       devolucionCliente,
-      // dataset1,
-      // tablaTickets,
     };
   },
 };

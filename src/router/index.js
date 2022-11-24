@@ -12,6 +12,11 @@ const routes = [
     component: () => import("../components/InstallWizard.vue"),
   },
   {
+    path: "/tecnico",
+    name: "Tecnico",
+    component: () => import("../views/TecnicoView.vue"),
+  },
+  {
     path: "/abrirCaja",
     name: "Abrir caja",
     component: () => import("../views/AbrirCajaView.vue"),
