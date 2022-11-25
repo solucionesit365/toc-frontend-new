@@ -78,13 +78,13 @@ class tocGameV3 {
 
 export const tocGame = new tocGameV3();
 
-setInterval(async () => {
-  if (
-    router.currentRoute.value.path != "/abrirCaja" &&
-    router.currentRoute.value.path != "/installWizard"
-  ) {
-    if (!(await tocGame.cajaAbierta())) {
-      router.push("/abrirCaja");
-    }
-  }
-}, 3000);
+// setInterval(async () => {
+//   if (
+//     router.currentRoute.value.path != "/abrirCaja" &&
+//     router.currentRoute.value.path != "/installWizard"
+//   ) {
+//     if (!(await tocGame.cajaAbierta())) {
+//       router.push("/abrirCaja");
+//     }
+//   }
+// }, 3000);
