@@ -54,11 +54,12 @@
 </template>
 
 <script>
-import { computed, provide, ref } from "vue";
+import { computed, onMounted, provide, ref } from "vue";
 import PesoComponent from "./PesoComponent.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 export default {
   name: "TeclasComponent",
   components: {
@@ -66,6 +67,7 @@ export default {
   },
   setup(_props, { expose }) {
     const store = useStore();
+    const router = useRouter();
     const teclado = computed(() => store.state.Teclado.objTeclado);
     const indexMenuActivo = computed(() => store.state.Teclado.indexMenuActivo);
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
@@ -223,6 +225,12 @@ export default {
     provide("addItem", addItem);
     expose({
       clickTecla,
+    });
+
+    onMounted(() => {
+      if (!arrayTrabajadores.value || arrayTrabajadores.value?.length === 0) {
+        router.push("menu/fichajes");
+      }
     });
 
     return {

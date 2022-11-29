@@ -14,6 +14,15 @@
         color="primary"
         size="lg"
         class="w-100"
+        @click="descargarTarifasEspeciales()"
+        >Descargar tarifas especiales</MDBBtn
+      >
+    </div>
+    <div class="row mt-2">
+      <MDBBtn
+        color="primary"
+        size="lg"
+        class="w-100"
         @click="descargarTicketInfo()"
         >Descargar info. ticket finales</MDBBtn
       >
@@ -111,6 +120,25 @@ export default {
       console.log("descargarTicketInfo");
     }
 
+    function descargarTarifasEspeciales() {
+      axios
+        .get("tarifas/descargarTarifas")
+        .then((res) => {
+          if (res.data) {
+            Swal.fire(
+              "OK",
+              "Tarifas especiales descargadas correctamente",
+              "success"
+            );
+          } else {
+            throw Error("No se han podido descargar las tarifas especiales");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
+    }
+
     function actualizarTrabajadores() {
       console.log("actualizarTrabajadores");
     }
@@ -136,6 +164,7 @@ export default {
     }
     return {
       descargarClientesFinales,
+      descargarTarifasEspeciales,
       descargarTicketInfo,
       actualizarTrabajadores,
       actualizarTeclados,

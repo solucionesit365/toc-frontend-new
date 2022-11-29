@@ -82,8 +82,10 @@ export default {
       if (arrayCestas.value) {
         for (let i = 0; i < arrayCestas.value.length; i++) {
           if (
+            arrayTrabajadores.value &&
+            arrayTrabajadores.value[indexTrabajadorActivo.value] &&
             arrayCestas.value[i]._id ==
-            arrayTrabajadores.value[indexTrabajadorActivo.value].idCesta
+              arrayTrabajadores.value[indexTrabajadorActivo.value].idCesta
           ) {
             return arrayCestas.value[i];
           }

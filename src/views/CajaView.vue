@@ -22,10 +22,18 @@
       >Ver último cierre</MDBBtn
     >
     <MDBBtn
+      v-if="cajaAbierta"
       outline="dark"
       class="opcionesPrincipales"
       @click="goTo('/menu/caja/cerrarCaja')"
       >Cerrar caja</MDBBtn
+    >
+    <MDBBtn
+      v-else
+      outline="dark"
+      class="opcionesPrincipales"
+      @click="goTo('/abrirCaja')"
+      >Abrir caja</MDBBtn
     >
   </div>
   <div class="row mt-1">
@@ -34,7 +42,10 @@
 </template>
 
 <script>
+import axios from "axios";
 import { MDBBtn } from "mdb-vue-ui-kit";
+import Swal from "sweetalert2";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 export default {
@@ -44,11 +55,29 @@ export default {
   },
   setup() {
     const router = useRouter();
+    const cajaAbierta = ref(null);
     function goTo(x) {
       router.push(x);
     }
+
+    function getEstado() {
+      axios
+        .get("caja/estadoCaja")
+        .then((res) => {
+          cajaAbierta.value = res.data;
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
+    }
+
+    onMounted(() => {
+      getEstado();
+    });
+
     return {
       goTo,
+      cajaAbierta,
     };
   },
 };
