@@ -131,7 +131,7 @@ export default {
             else throw Error("No se ha podido añadir el artículo a la cesta");
           }
         } else {
-          modalPesoRef.value.abrirModal();
+          modalPesoRef.value.abrirModal(item.idArticle, cesta.value._id);
         }
       } catch (err) {
         Swal.fire("Oops...", err.message, "error");

@@ -40,7 +40,12 @@
             "
             >To Go</MDBBtn
           >
-          <MDBBtn color="success" class="ms-2 sizeBotones">Nuevo</MDBBtn>
+          <MDBBtn
+            color="success"
+            class="ms-2 sizeBotones"
+            @click="modalNuevoClienteRef.abrirModal()"
+            >Nuevo</MDBBtn
+          >
           <MDBBtn
             color="danger"
             class="ms-2 sizeBotones"
@@ -108,6 +113,7 @@
       </div>
     </MDBModalBody>
   </MDBModal>
+  <ModalNuevoCliente ref="modalNuevoClienteRef" />
 </template>
 
 <script>
@@ -116,6 +122,7 @@ import { MDBModal, MDBModalBody, MDBBtn } from "mdb-vue-ui-kit";
 import Swal from "sweetalert2";
 import { ref, watch, computed } from "vue";
 import { useStore } from "vuex";
+import ModalNuevoCliente from "./ModalNuevoCliente.vue";
 
 export default {
   name: "ModalClientesComponent",
@@ -123,6 +130,7 @@ export default {
     MDBModal,
     MDBModalBody,
     MDBBtn,
+    ModalNuevoCliente,
   },
   setup(_props, context) {
     const store = useStore();
@@ -130,6 +138,7 @@ export default {
     const datoBorrar = ref(0);
     const inputBusqueda = ref("");
     const arrayClientes = ref();
+    const modalNuevoClienteRef = ref(null);
     const arrayTrabajadores = computed(
       () => store.state.Trabajadores.arrayTrabajadores
     );
@@ -220,6 +229,7 @@ export default {
       arrayClientes,
       selectCliente,
       buscar,
+      modalNuevoClienteRef,
       clickClienteAtajo,
     };
   },

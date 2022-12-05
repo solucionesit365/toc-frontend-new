@@ -43,6 +43,8 @@ import {
 } from "mdb-vue-ui-kit";
 import NumpadComponent from "../NumpadComponent.vue";
 import { ref, provide } from "vue";
+import axios from "axios";
+import Swal from "sweetalert2";
 export default {
   name: "PesoComponent",
   components: {
@@ -58,9 +60,14 @@ export default {
   setup(_props, { expose }) {
     const modalPeso = ref(false);
     const numpadRef = ref(null);
-    const infoArticulo = ref(null);
+    const infoArticulo = ref({
+      idArticulo: null,
+      idCesta: null,
+    });
 
-    function abrirModal() {
+    function abrirModal(idArticulo, idCesta) {
+      infoArticulo.value.idArticulo = idArticulo;
+      infoArticulo.value.idCesta = idCesta;
       modalPeso.value = true;
     }
 
@@ -68,15 +75,35 @@ export default {
       abrirModal,
     });
 
-    function addItem(gramos) {
-      console.log("AQUÍ SE TIENE QUE LLAMAR AL MÉTODO DEL PADRE", gramos);
+    function insertarArticulo(gramos) {
+      console.log(gramos, infoArticulo.value);
+      axios
+        .post("teclado/clickTeclaArticulo", {
+          idArticulo: infoArticulo.value.idArticulo,
+          gramos,
+          idCesta: infoArticulo.value.idCesta,
+          unidades: 1,
+          arraySuplementos: null,
+        })
+        .then((res) => {
+          if (res.data) {
+            infoArticulo.value.idArticulo = null;
+            infoArticulo.value.idCesta = null;
+            modalPeso.value = false;
+          } else {
+            throw Error("No se ha podido insertar el artículo a peso");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
     }
 
     function test() {
       console.log(45);
     }
 
-    provide("okValue", addItem);
+    provide("okValue", insertarArticulo);
 
     return {
       modalPeso,
