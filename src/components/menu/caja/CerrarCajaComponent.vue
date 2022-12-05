@@ -348,8 +348,15 @@ export default {
           idDependienta: trabajadorActivo.value._id,
         });
         if (resCierre.data) {
-          Swal.fire("Perfecto", "Cierre de caja OK", "success");
-          router.push("/abrirCaja");
+          Swal.fire({
+            title: "Caja cerrada correctamente",
+            icon: "success",
+            confirmButtonText: "Continuar",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              router.push("/abrirCaja");
+            }
+          });
         } else {
           throw Error("No se ha podido cerrar la caja");
         }

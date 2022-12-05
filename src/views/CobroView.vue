@@ -152,6 +152,12 @@ export default {
         if (!resultado.data) {
           throw Error("No se ha podido crear el ticket");
         } else {
+          Swal.fire({
+            icon: "success",
+            title: "Venta registrada correctamente",
+            showConfirmButton: false,
+            timer: 1200,
+          });
           if (formaPago.value === "TARJETA")
             store.dispatch("Datafono/setEstado", "PENDIENTE");
           router.push("/main");

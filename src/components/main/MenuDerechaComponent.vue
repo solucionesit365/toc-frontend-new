@@ -205,7 +205,13 @@ export default {
             })
             .then((res) => {
               if (res.data) {
-                Swal.fire("OK", "Devolución creada correctamente", "success");
+                resetGeneral();
+                Swal.fire({
+                  icon: "success",
+                  title: "Devolución creada correctamente",
+                  showConfirmButton: false,
+                  timer: 2000,
+                });
               } else {
                 throw Error("No se ha podido crear la devolución");
               }
@@ -224,7 +230,12 @@ export default {
             .then((resCrearTicket) => {
               if (resCrearTicket.data) {
                 resetGeneral();
-                Swal.fire("Perfecto", "Consumo personal registrado", "success");
+                Swal.fire({
+                  icon: "success",
+                  title: "Consumo personal registrado",
+                  showConfirmButton: false,
+                  timer: 1200,
+                });
               } else {
                 throw Error(
                   "No se ha podido crear el ticket de consumo personal"

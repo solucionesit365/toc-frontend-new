@@ -50,10 +50,13 @@
       <h1 class="text-center">
         Total: {{ ticketSeleccionado.total.toFixed(2) }}
       </h1>
+      <MDBBtn @click="imprimirTicket()" color="success" class="w-100"
+        ><MDBIcon icon="print" size="3x"
+      /></MDBBtn>
       <MDBBtn
         v-if="ticketSeleccionado.tipoPago === 'EFECTIVO'"
         color="primary"
-        class="w-100"
+        class="w-100 mt-2"
         size="lg"
         @click="pagarConTarjeta(ticketSeleccionado._id)"
         >Pagar con tarjeta</MDBBtn
@@ -61,7 +64,7 @@
       <MDBBtn
         v-if="ticketSeleccionado.tipoPago === 'TARJETA'"
         color="danger"
-        class="w-100"
+        class="w-100 mt-2"
         size="lg"
         @click="devolucionCliente(ticketSeleccionado._id)"
         >Devolución al cliente</MDBBtn
@@ -71,7 +74,7 @@
 </template>
 
 <script>
-import { MDBTable, MDBBtn } from "mdb-vue-ui-kit";
+import { MDBTable, MDBBtn, MDBIcon } from "mdb-vue-ui-kit";
 import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
@@ -83,6 +86,7 @@ export default {
   components: {
     MDBTable,
     MDBBtn,
+    MDBIcon,
   },
   setup() {
     const store = useStore();
@@ -110,6 +114,16 @@ export default {
     function getTiempo(x) {
       const fecha = new Date(x);
       return moment(fecha).format("HH:ss DD/MM/YYYY");
+    }
+
+    function imprimirTicket() {
+      axios
+        .post("impresora/imprimirTicket", {
+          idTicket: ticketSeleccionado.value._id,
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
     }
 
     function setActivo(ticket) {
@@ -155,6 +169,7 @@ export default {
       ticketSeleccionado,
       pagarConTarjeta,
       devolucionCliente,
+      imprimirTicket,
     };
   },
 };

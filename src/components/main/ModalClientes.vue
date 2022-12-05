@@ -10,9 +10,36 @@
     <MDBModalBody>
       <div class="row">
         <div class="d-inline-block text-center">
-          <MDBBtn color="warning" class="sizeBotones">Glovo</MDBBtn>
-          <MDBBtn color="dark" class="ms-2 sizeBotones">Uber</MDBBtn>
-          <MDBBtn color="primary" class="ms-2 sizeBotones">To Go</MDBBtn>
+          <MDBBtn
+            color="warning"
+            class="sizeBotones"
+            @click="
+              clickClienteAtajo(
+                'CliBoti_000_{A83B364B-252F-464B-B0C3-AA89DA258F64}'
+              )
+            "
+            >Glovo</MDBBtn
+          >
+          <MDBBtn
+            color="dark"
+            class="ms-2 sizeBotones"
+            @click="
+              clickClienteAtajo(
+                'CliBoti_000_{2713C1E3-06C0-4099-851D-33018FD4851C}'
+              )
+            "
+            >Uber</MDBBtn
+          >
+          <MDBBtn
+            color="primary"
+            class="ms-2 sizeBotones"
+            @click="
+              clickClienteAtajo(
+                'CliBoti_000_{7A6EA7B0-3229-4A94-81EA-232F4666A7BE}'
+              )
+            "
+            >To Go</MDBBtn
+          >
           <MDBBtn color="success" class="ms-2 sizeBotones">Nuevo</MDBBtn>
           <MDBBtn
             color="danger"
@@ -130,6 +157,23 @@ export default {
       datoBorrar.value++;
     }
 
+    function clickClienteAtajo(idCliente) {
+      axios
+        .post("clientes/getClienteByID", { idCliente })
+        .then((res) => {
+          if (res.data) {
+            selectCliente(idCliente, res.data.nombre);
+          } else {
+            throw Error(
+              "No se ha podido obtener la información del cliente. backend"
+            );
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
+    }
+
     function selectCliente(idCliente, nombreCliente) {
       if (arrayCestas.value) {
         for (let i = 0; i < arrayCestas.value.length; i++) {
@@ -176,6 +220,7 @@ export default {
       arrayClientes,
       selectCliente,
       buscar,
+      clickClienteAtajo,
     };
   },
 };

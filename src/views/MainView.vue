@@ -22,7 +22,10 @@ import TeclasComponent from "@/components/main/TeclasComponent.vue";
 import CestaComponent from "@/components/main/CestaComponent.vue";
 import MenuIzquierdaComponent from "@/components/main/MenuIzquierdaComponent.vue";
 import MenuDerechaComponent from "@/components/main/MenuDerechaComponent.vue";
-import { provide, ref } from "vue";
+import { provide, ref, onMounted } from "vue";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useRouter } from "vue-router";
 
 export default {
   name: "MainView",
@@ -35,6 +38,7 @@ export default {
     MenuDerechaComponent,
   },
   setup() {
+    const router = useRouter();
     const refTeclasComponent = ref(null);
     const refMenuIzquierda = ref(null);
 
@@ -48,6 +52,20 @@ export default {
 
     provide("clickTecla", clickTecla);
     provide("resetGeneral", resetGeneral);
+
+    onMounted(() => {
+      axios
+        .get("caja/estadoCaja")
+        .then((res) => {
+          if (!res.data) {
+            router.push("/abrirCaja");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
+    });
+
     return {
       refTeclasComponent,
       refMenuIzquierda,
