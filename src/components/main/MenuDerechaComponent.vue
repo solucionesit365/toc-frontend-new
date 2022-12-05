@@ -230,12 +230,12 @@ export default {
             .then((resCrearTicket) => {
               if (resCrearTicket.data) {
                 resetGeneral();
-                Swal.fire({
-                  icon: "success",
-                  title: "Consumo personal registrado",
-                  showConfirmButton: false,
-                  timer: 1200,
-                });
+                // Swal.fire({
+                //   icon: "success",
+                //   title: "Consumo personal registrado",
+                //   showConfirmButton: false,
+                //   timer: 1200,
+                // });
               } else {
                 throw Error(
                   "No se ha podido crear el ticket de consumo personal"

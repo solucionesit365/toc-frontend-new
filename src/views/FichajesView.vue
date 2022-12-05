@@ -189,11 +189,11 @@ export default {
       }
     }
 
-    function activarConsumoPersonal() {
+    async function activarConsumoPersonal() {
       if (arrayCestas.value && cesta.value) {
         for (let i = 0; i < arrayCestas.value.length; i++) {
           if (arrayCestas.value[i]._id === cesta.value._id) {
-            store.dispatch("Cestas/setModoCesta", {
+            await store.dispatch("Cestas/setModoCesta", {
               modo: "CONSUMO_PERSONAL",
               index: i,
             });

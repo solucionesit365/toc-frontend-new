@@ -110,11 +110,11 @@ export default {
       router.push(x);
     }
 
-    function activarDevolucion() {
+    async function activarDevolucion() {
       if (arrayCestas.value && cesta.value) {
         for (let i = 0; i < arrayCestas.value.length; i++) {
           if (cesta.value._id === arrayCestas.value[i]._id) {
-            store.dispatch("Cestas/setModoCesta", {
+            await store.dispatch("Cestas/setModoCesta", {
               modo: "DEVOLUCION",
               index: i,
             });

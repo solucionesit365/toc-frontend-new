@@ -344,7 +344,7 @@ export default {
           total: total.value,
           detalleMonedas: getDetalle(),
           infoDinero: infoDinero.value,
-          cantidad3G: numpadRef2.value.cantidad,
+          cantidad3G: Number(numpadRef2.value.cantidad),
           idDependienta: trabajadorActivo.value._id,
         });
         if (resCierre.data) {
