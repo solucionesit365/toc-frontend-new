@@ -76,7 +76,6 @@ export default {
     });
 
     function insertarArticulo(gramos) {
-      console.log(gramos, infoArticulo.value);
       axios
         .post("teclado/clickTeclaArticulo", {
           idArticulo: infoArticulo.value.idArticulo,
