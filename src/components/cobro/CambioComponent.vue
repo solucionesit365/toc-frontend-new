@@ -5,24 +5,28 @@
         <MDBCardBody>
           <MDBCardTitle>Información cambio</MDBCardTitle>
           <MDBCardText>
-            <li class="sizeLetrasCambio">
-              Dinero recibido: {{ totalRecibido.toFixed(2) }} €
+            <li
+              class="sizeLetrasCambio"
+              v-if="cantidadTkrs != null && cantidadTkrs != undefined"
+            >
+              Dinero recibido:
+              {{ Number(totalRecibido + cantidadTkrs).toFixed(2) }} €
             </li>
             <li class="sizeLetrasCambio">Dinero a pagar: {{ aPagar }}</li>
             <li
-              v-if="aPagar - totalRecibido > 0"
+              v-if="cuenta != null && cuenta != undefined && cuenta > 0"
               class="estiloFalta sizeLetrasCambio"
             >
-              Faltan {{ (aPagar - totalRecibido).toFixed(2) }} €
+              Faltan {{ cuenta.toFixed(2) }} €
             </li>
             <li
-              v-if="aPagar - totalRecibido == 0"
+              v-if="cuenta != null && cuenta != undefined && cuenta == 0"
               class="estiloPerfecto sizeLetrasCambio"
             >
               Cambio perfecto
             </li>
             <li
-              v-if="aPagar - totalRecibido < 0"
+              v-if="cuenta != null && cuenta != undefined && cuenta < 0"
               class="estiloSobra sizeLetrasCambio"
             >
               Sobran {{ (aPagar - totalRecibido).toFixed(2) }} €
@@ -87,7 +91,7 @@
 </template>
 
 <script>
-import { ref, inject } from "vue";
+import { ref, inject, computed } from "vue";
 
 import {
   MDBCard,
@@ -105,11 +109,19 @@ export default {
     MDBCardText,
     MDBBtn,
   },
-  setup() {
+  setup(_props, { expose }) {
     const totalRecibido = ref(0);
     const total = inject("total");
     const aPagar = ref(total);
     const historial = ref([]);
+    const cantidadTkrs = ref(0);
+    const cuenta = computed(() => {
+      if (aPagar.value - cantidadTkrs.value < 0) {
+        return 0;
+      } else {
+        return aPagar.value - (totalRecibido.value + cantidadTkrs.value);
+      }
+    });
 
     function sumar(x) {
       totalRecibido.value += x;
@@ -130,12 +142,22 @@ export default {
       historial.value = [];
     }
 
+    function setTkrs(x) {
+      cantidadTkrs.value = x;
+    }
+
+    expose({
+      setTkrs,
+    });
+
     return {
       sumar,
       totalRecibido,
       aPagar,
       deshacer,
       limpiar,
+      cantidadTkrs,
+      cuenta,
     };
   },
 };

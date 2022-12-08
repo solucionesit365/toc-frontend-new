@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <CambioComponent />
+    <CambioComponent ref="cambioRef" />
   </div>
   <div class="row mt-4">
     <div class="col">
@@ -26,7 +26,11 @@
       </MDBCard>
     </div>
     <div class="col">
-      <MDBCard class="cardTicketRestaurante text-center">
+      <MDBCard
+        class="cardTicketRestaurante text-center"
+        v-if="modalTkrsRef"
+        @click="modalTkrsRef.abrirModal()"
+      >
         <MDBCardBody>
           <MDBCardText>
             <img
@@ -69,6 +73,7 @@
 
     <!-- TICKET RESTAURANTE, COBRAR CON VISA, ¿CANCELAR OPERACIÓN DEL DATÁFONO? -->
   </div>
+  <ModalTkrsComponent ref="modalTkrsRef" />
   <VolverComponent />
   <div class="position-absolute bottom-0 end-0">
     <MDBBtn class="botonCobrar" color="primary" @click="cobrar()">Pagar</MDBBtn>
@@ -79,6 +84,7 @@
 import { computed, provide, ref } from "vue";
 import CambioComponent from "../components/cobro/CambioComponent.vue";
 import VolverComponent from "../components/Volver.vue";
+import ModalTkrsComponent from "../components/cobro/ModalTkrsComponent.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 import {
@@ -99,12 +105,16 @@ export default {
     MDBCardBody,
     MDBCardText,
     VolverComponent,
+    ModalTkrsComponent,
     MDBIcon,
   },
   setup() {
     const store = useStore();
     const router = useRouter();
     const formaPago = ref("TARJETA");
+    const modalTkrsRef = ref(null);
+    const cambioRef = ref(null);
+    const cantidadTkrs = ref(0);
     const indexTrabajadorActivo = computed(
       () => store.state.Trabajadores.indexActivo
     );
@@ -137,6 +147,11 @@ export default {
       }
       return null;
     });
+
+    function setTkrs(cantidad) {
+      cantidadTkrs.value = cantidad;
+      cambioRef.value.setTkrs(cantidad);
+    }
 
     async function cobrar() {
       try {
@@ -187,12 +202,15 @@ export default {
     }
 
     provide("total", getTotal(cesta.value));
+    provide("setTkrs", setTkrs);
 
     return {
       cesta,
       getTotal,
       cobrar,
       formaPago,
+      modalTkrsRef,
+      cambioRef,
     };
   },
 };

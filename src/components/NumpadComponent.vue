@@ -92,6 +92,15 @@
         OK
       </button>
     </div>
+    <div class="btn-group">
+      <button
+        type="button"
+        class="btn btn-outline-secondary py-3 botonComa"
+        @click="addTecla('.')"
+      >
+        ,
+      </button>
+    </div>
   </div>
 </template>
 
@@ -106,6 +115,7 @@ export default {
     const altoTecla = ref("5.5rem");
 
     function addTecla(x) {
+      if (x === ".") cantidad.value = cantidad.value.replace(".", "");
       cantidad.value += x;
       if (cantidad.value[0] == "0") cantidad.value = cantidad.value.slice(1);
     }
@@ -147,6 +157,15 @@ $sizeFuente: 2.5rem; */
   min-height: 5.5rem;
   max-height: 5.5rem;
   font-size: 2.5rem;
+  font-weight: bold;
+  color: #606060 !important;
+}
+.botonComa {
+  min-width: 16.25rem;
+  max-width: 16.25rem;
+  min-height: 4rem;
+  max-height: 4rem;
+  font-size: 2rem;
   font-weight: bold;
   color: #606060 !important;
 }
