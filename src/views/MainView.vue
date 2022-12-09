@@ -7,7 +7,7 @@
       <MenuIzquierdaComponent ref="refMenuIzquierda" />
     </div>
     <div class="col-md-6">
-      <CestaComponent />
+      <CestaComponent ref="cestaRef" />
     </div>
     <div class="col-md-3">
       <MenuDerechaComponent />
@@ -41,6 +41,7 @@ export default {
     const router = useRouter();
     const refTeclasComponent = ref(null);
     const refMenuIzquierda = ref(null);
+    const cestaRef = ref(null);
 
     function clickTecla(item) {
       refTeclasComponent.value.clickTecla(item);
@@ -50,8 +51,13 @@ export default {
       refMenuIzquierda.value.resetGeneral();
     }
 
+    function actualizarPuntos() {
+      cestaRef.value.actualizarPuntos();
+    }
+
     provide("clickTecla", clickTecla);
     provide("resetGeneral", resetGeneral);
+    provide("actualizarPuntos", actualizarPuntos);
 
     onMounted(() => {
       axios
@@ -69,6 +75,7 @@ export default {
     return {
       refTeclasComponent,
       refMenuIzquierda,
+      cestaRef,
     };
   },
 };

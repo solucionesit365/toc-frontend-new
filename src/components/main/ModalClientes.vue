@@ -120,7 +120,7 @@
 import axios from "axios";
 import { MDBModal, MDBModalBody, MDBBtn } from "mdb-vue-ui-kit";
 import Swal from "sweetalert2";
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, inject } from "vue";
 import { useStore } from "vuex";
 import ModalNuevoCliente from "./ModalNuevoCliente.vue";
 
@@ -139,6 +139,7 @@ export default {
     const inputBusqueda = ref("");
     const arrayClientes = ref();
     const modalNuevoClienteRef = ref(null);
+    const actualizarPuntos = inject("actualizarPuntos");
     const arrayTrabajadores = computed(
       () => store.state.Trabajadores.arrayTrabajadores
     );
@@ -193,7 +194,7 @@ export default {
               nombreCliente,
             });
             store.dispatch("EstadoDinamico/setVistaCliente", true);
-
+            actualizarPuntos();
             modalClientes.value = false;
             break;
           }

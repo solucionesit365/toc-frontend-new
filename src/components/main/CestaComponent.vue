@@ -10,6 +10,8 @@
           v-bind:class="{
             estiloPromo: item.promocion,
             seleccionado: indexItemCestaActivo === index,
+            sePuedeRegalar: sePuedeRegalar(item),
+            regalado: item.regalo,
           }"
         >
           <td>
@@ -18,7 +20,7 @@
               style="max-width: 21rem; min-width: 21rem"
               >{{ item.nombre }}</span
             >
-            <span class="xUnidades ms-2"> x{{ item.unidades }}</span>
+            <span class="xUnidades ms-2 d-inline"> x{{ item.unidades }}</span>
           </td>
           <td>{{ item.subtotal.toFixed(2) }} €</td>
         </tr>
@@ -46,7 +48,7 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import {
   MDBCard,
   MDBCardBody,
@@ -66,7 +68,7 @@ export default {
     MDBCardText,
     MDBBtn,
   },
-  setup() {
+  setup(_props, { expose }) {
     const store = useStore();
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
     const indexItemCestaActivo = computed(
@@ -93,6 +95,30 @@ export default {
       }
       return null;
     });
+
+    const puntos = ref(0);
+
+    function actualizarPuntos() {
+      if (cesta.value?.idCliente) {
+        axios
+          .post("clientes/consultarPuntos", {
+            idCliente: cesta.value?.idCliente,
+          })
+          .then((res) => {
+            if (typeof res.data === "number") {
+              puntos.value = res.data;
+            } else {
+              puntos.value = 0;
+            }
+          })
+          .catch((err) => {
+            Swal.fire("Oops...", err.message, "error");
+            puntos.value = 0;
+          });
+      } else {
+        puntos.value = 0;
+      }
+    }
 
     function inicializarCesta() {
       if (
@@ -129,9 +155,85 @@ export default {
       }
     }
 
-    function clickItem(index) {
-      store.dispatch("Cestas/setActivoAction", index);
+    function pointsToEuros(points) {
+      return Math.trunc(points * 0.03 * 0.02);
     }
+
+    function sePuedeRegalar(itemCesta) {
+      const arrayRegalables = [8641, 8654, 8640, 8675, 99, 315, 314, 312, 5603];
+
+      for (let i = 0; i < arrayRegalables.length; i++) {
+        if (arrayRegalables[i] === itemCesta.idArticulo) {
+          if (
+            pointsToEuros(puntos.value) >= itemCesta.subtotal &&
+            !itemCesta.regalo
+          ) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    function regalar(indexLista) {
+      axios
+        .post("cestas/regalarProducto", {
+          idCesta: cesta.value._id,
+          indexLista,
+        })
+        .then((res) => {
+          if (res.data) {
+            Swal.fire({
+              icon: "success",
+              title: "¡Regalo aplicado!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            Swal.fire(
+              "Oops...",
+              "No se ha podido regalar el producto",
+              "error"
+            );
+          }
+        });
+    }
+
+    function clickItem(index) {
+      if (sePuedeRegalar(cesta.value.lista[index])) {
+        Swal.fire({
+          title: "¿Regalar este artículo?",
+          showDenyButton: true,
+          showCancelButton: false,
+          confirmButtonText: "Sí, regalar",
+          denyButtonText: "No",
+          icon: "question",
+          customClass: {
+            actions: "my-actions",
+            cancelButton: "order-1 right-gap",
+            confirmButton: "order-2",
+            denyButton: "order-3",
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            regalar(index);
+          } else if (result.isDenied) {
+            store.dispatch("Cestas/setActivoAction", index);
+          }
+        });
+      } else {
+        store.dispatch("Cestas/setActivoAction", index);
+      }
+    }
+
+    expose({
+      actualizarPuntos,
+    });
+
+    onMounted(() => {
+      actualizarPuntos();
+    });
 
     return {
       cesta,
@@ -140,6 +242,8 @@ export default {
       indexItemCestaActivo,
       clickItem,
       inicializarCesta,
+      sePuedeRegalar,
+      puntos,
     };
   },
 };
@@ -147,7 +251,7 @@ export default {
 
 <style lang="scss" scoped>
 .seleccionado {
-  background-color: rgb(255, 221, 176);
+  background-color: rgb(255, 221, 176) !important;
 }
 .colorFuente {
   color: #606060 !important;
@@ -170,5 +274,12 @@ export default {
 .reverso {
   display: flex;
   flex-direction: column-reverse;
+}
+.sePuedeRegalar {
+  background-color: #ffc5c5;
+}
+
+.regalado {
+  background-color: #d5ffbe;
 }
 </style>
