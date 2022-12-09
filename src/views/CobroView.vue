@@ -6,7 +6,7 @@
     <div class="col">
       <MDBCard
         class="cardTicketRestaurante text-center"
-        @click="formaPago = 'EFECTIVO'"
+        @click="setFormaPago('EFECTIVO')"
       >
         <MDBCardBody>
           <MDBCardText>
@@ -51,7 +51,7 @@
     <div class="col">
       <MDBCard
         class="cardTicketRestaurante text-center"
-        @click="formaPago = 'TARJETA'"
+        @click="setFormaPago('TARJETA')"
       >
         <MDBCardBody>
           <MDBCardText>
@@ -149,19 +149,46 @@ export default {
     });
 
     function setTkrs(cantidad) {
-      cantidadTkrs.value = cantidad;
+      cantidadTkrs.value = Number(cantidad);
       cambioRef.value.setTkrs(cantidad);
+      if (cantidad >= getTotal(cesta.value)) {
+        formaPago.value = "TKRS";
+      } else {
+        formaPago.value = "EFECTIVO";
+      }
+    }
+
+    function setFormaPago(forma) {
+      if (cantidadTkrs.value < getTotal(cesta.value)) {
+        if (forma === "TARJETA" && cantidadTkrs.value > 0) {
+          Swal.fire(
+            "Oops...",
+            "De momento el Ticket Restaurant solo se puede combinar con EFECTIVO",
+            "error"
+          );
+        } else {
+          formaPago.value = forma;
+        }
+      } else {
+        Swal.fire(
+          "¡Eo!",
+          "El ticket resturant ya cubre el total de la venta",
+          "error"
+        );
+      }
     }
 
     async function cobrar() {
       try {
-        // const tipo = getTipo(cesta.value.modo);
-
         const resultado = await axios.post("tickets/crearTicket", {
           total: getTotal(cesta.value),
           idCesta: cesta.value._id,
           idTrabajador: trabajadorActivo.value._id,
           tipo: formaPago.value,
+          tkrsData: {
+            cantidadTkrs: cantidadTkrs.value,
+            formaPago: "EFECTIVO",
+          },
         });
 
         if (!resultado.data) {
@@ -211,6 +238,7 @@ export default {
       formaPago,
       modalTkrsRef,
       cambioRef,
+      setFormaPago,
     };
   },
 };

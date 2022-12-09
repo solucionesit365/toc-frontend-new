@@ -124,6 +124,7 @@ export default {
     });
 
     function sumar(x) {
+      console.log(totalRecibido.value, x, cantidadTkrs.value);
       totalRecibido.value += x;
       historial.value.push(x);
     }
@@ -143,7 +144,7 @@ export default {
     }
 
     function setTkrs(x) {
-      cantidadTkrs.value = x;
+      cantidadTkrs.value = Number(x);
     }
 
     expose({
