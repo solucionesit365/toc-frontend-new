@@ -18,7 +18,10 @@
       @click="goTo('/menu/caja/entradaDinero')"
       >Entrada de dinero</MDBBtn
     >
-    <MDBBtn outline="dark" class="opcionesPrincipales"
+    <MDBBtn
+      outline="dark"
+      class="opcionesPrincipales"
+      @click="goTo('/menu/caja/verUltimoCierre')"
       >Ver último cierre</MDBBtn
     >
     <MDBBtn

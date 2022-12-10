@@ -65,6 +65,11 @@ const routes = [
             component: () =>
               import("../components/menu/caja/SalidaComponent.vue"),
           },
+          {
+            path: "verUltimoCierre",
+            component: () =>
+              import("../components/menu/caja/VerUltimoCierreComponent.vue"),
+          },
         ],
       },
       {
