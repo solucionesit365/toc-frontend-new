@@ -350,6 +350,13 @@ export default {
       cantidad3G.value = 0;
     }
 
+    function setCookie(cname, cvalue, exdays) {
+      const d = new Date();
+      d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+      let expires = "expires=" + d.toUTCString();
+      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
     async function abrirCaja() {
       try {
         const resApertura = (
@@ -363,6 +370,7 @@ export default {
         if (resApertura) {
           cerrarModalConfirmacion();
           Swal.fire("¡Todo OK!", "Caja abierta correctamente", "success");
+          setCookie("datosCierre", "", 7);
           router.push("/main");
         } else {
           throw Error("No se ha podido abrir la caja");
@@ -387,28 +395,51 @@ export default {
       modalConfirmacionApertura.value = false;
     }
 
+    function getCookie(cname) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(";");
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == " ") {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
     onMounted(() => {
-      axios
-        .get("caja/getMonedasUltimoCierre")
-        .then((res) => {
-          if (res.data && res.data.array) {
-            infoDinero.value = res.data.array;
-          } else {
-            Swal.fire(
-              "Oops...",
-              "No se ha podido cargar la información (backend)",
-              "warning"
-            );
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          Swal.fire(
-            "Error",
-            "No se ha podido cargar la información del último cierre (petición)",
-            "error"
-          );
-        });
+      const infoGuardadaStr = getCookie("datosCierre");
+      if (infoGuardadaStr != "") {
+        const infoGuardada = JSON.parse(infoGuardadaStr);
+        for (let i = 0; i < infoGuardada.length; i++) {
+          infoDinero.value[i].valor = infoGuardada[i];
+        }
+      }
+      // axios
+      //   .get("caja/getMonedasUltimoCierre")
+      //   .then((res) => {
+      //     if (res.data && res.data.array) {
+      //       infoDinero.value = res.data.array;
+      //     } else {
+      //       Swal.fire(
+      //         "Oops...",
+      //         "No se ha podido cargar la información (backend)",
+      //         "warning"
+      //       );
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //     Swal.fire(
+      //       "Error",
+      //       "No se ha podido cargar la información del último cierre (petición)",
+      //       "error"
+      //     );
+      //   });
     });
 
     // provide("doSomething", doSomething);

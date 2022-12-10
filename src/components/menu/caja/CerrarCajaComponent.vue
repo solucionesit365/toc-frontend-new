@@ -171,7 +171,7 @@
 </template>
 
 <script>
-import { ref, computed, provide, watch } from "vue";
+import { ref, computed, provide, watch, onMounted } from "vue";
 import NumpadComponent from "../../NumpadComponent.vue";
 import {
   MDBCard,
@@ -205,7 +205,7 @@ export default {
     MDBModalFooter,
   },
   setup() {
-    const indexActivo = ref(0);
+    const indexActivo = ref(null);
     const sizeBilletes = "140";
     const cantidad3G = ref(0);
     const numpadRef = ref(null);
@@ -232,6 +232,7 @@ export default {
       }
       return null;
     });
+
     function setActivo(x) {
       indexActivo.value = x;
       numpadRef.value.setValor(infoDinero.value[x]);
@@ -376,9 +377,45 @@ export default {
       return null;
     });
 
+    function setCookie(cname, cvalue, exdays) {
+      const d = new Date();
+      d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+      let expires = "expires=" + d.toUTCString();
+      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function getCookie(cname) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(";");
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == " ") {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
     watch(cantidad, () => {
       if (indexActivo.value != null && indexActivo.value != undefined) {
         infoDinero.value[indexActivo.value] = cantidad.value;
+        setCookie("datosCierre", JSON.stringify(infoDinero.value), 7);
+      }
+    });
+
+    onMounted(() => {
+      try {
+        const cookieStr = getCookie("datosCierre");
+        if (cookieStr != "") {
+          infoDinero.value = JSON.parse(cookieStr);
+        }
+      } catch (err) {
+        console.log(err);
+        Swal.fire("Oops...", "No hay datos del último cierre", "info");
       }
     });
 
