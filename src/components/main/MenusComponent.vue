@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" style="margin-top: 1px">
     <div class="btn-group shadow-none" role="group">
       <button
         v-for="(item, index) in teclado"
@@ -47,6 +47,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$anchoMaxBotonMenu: 8.24rem;
+$anchoMinBotonMenu: 8.24rem;
+$altoMaxBotonMenu: 3.7rem;
+$altoMinBotonMenu: 3.7rem;
 .botonesMenu {
   background-color: #fff5e9;
   color: #c95907;
@@ -55,10 +59,10 @@ export default {
   font-size: 0.92rem;
   height: 60px;
   font-weight: bold;
-  max-width: 9.24rem;
-  min-width: 9.24rem;
-  max-height: 3.7rem;
-  min-height: 3.7rem;
+  max-width: $anchoMaxBotonMenu;
+  min-width: $anchoMinBotonMenu;
+  max-height: $altoMaxBotonMenu;
+  min-height: $altoMinBotonMenu;
 }
 
 .activo {

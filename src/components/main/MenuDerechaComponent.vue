@@ -192,10 +192,23 @@ export default {
         });
     }
 
-    function handleCobro() {
+    async function handleCobro() {
       if (cesta.value) {
         if (cesta.value.modo === "VENTA") {
-          goTo("/cobro");
+          if (cesta.value.idCliente && cesta.value.idCliente != "") {
+            const cliente = (
+              await axios.post("clientes/getClienteById", {
+                idCliente: cesta.value.idCliente,
+              })
+            ).data;
+            if (cliente?.albaran === true && cliente?.noPagaEnTienda === true) {
+              Swal.fire("LOL", "detectado cliente que no paga aquí", "info");
+            } else {
+              goTo("/cobro");
+            }
+          } else {
+            goTo("/cobro");
+          }
         } else if (cesta.value.modo === "DEVOLUCION") {
           axios
             .post("devoluciones/nuevaDevolucion", {

@@ -169,7 +169,7 @@ export default {
 
     function clickClienteAtajo(idCliente) {
       axios
-        .post("clientes/getClienteByID", { idCliente })
+        .post("clientes/getClienteById", { idCliente })
         .then((res) => {
           if (res.data) {
             selectCliente(idCliente, res.data.nombre);
