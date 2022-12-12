@@ -51,6 +51,10 @@ export default {
       refMenuIzquierda.value.resetGeneral();
     }
 
+    // function reloadCesta() {
+    //   refMenuIzquierda.value.reloadComponent();
+    // }
+
     function actualizarPuntos() {
       cestaRef.value.actualizarPuntos();
     }
@@ -58,6 +62,7 @@ export default {
     provide("clickTecla", clickTecla);
     provide("resetGeneral", resetGeneral);
     provide("actualizarPuntos", actualizarPuntos);
+    // provide("reloadCesta", reloadCesta);
 
     onMounted(() => {
       axios

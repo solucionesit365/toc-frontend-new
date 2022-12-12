@@ -161,6 +161,13 @@ export default {
 
     function sePuedeRegalar(itemCesta) {
       const arrayRegalables = [8641, 8654, 8640, 8675, 99, 315, 314, 312, 5603];
+      if (
+        cesta.value.idCliente == null ||
+        cesta.value.idCliente == undefined ||
+        cesta.value.idCliente == ""
+      ) {
+        return false;
+      }
 
       for (let i = 0; i < arrayRegalables.length; i++) {
         if (arrayRegalables[i] === itemCesta.idArticulo) {
@@ -227,8 +234,14 @@ export default {
       }
     }
 
+    // function reloadComponent() {
+    //   const instance = getCurrentInstance();
+    //   instance.proxy.$forceUpdate();
+    // }
+
     expose({
       actualizarPuntos,
+      // reloadComponent,
     });
 
     onMounted(() => {
