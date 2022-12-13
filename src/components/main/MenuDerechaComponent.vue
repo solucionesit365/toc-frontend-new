@@ -202,7 +202,31 @@ export default {
               })
             ).data;
             if (cliente?.albaran === true && cliente?.noPagaEnTienda === true) {
-              Swal.fire("LOL", "detectado cliente que no paga aquí", "info");
+              axios
+                .post("tickets/crearTicket", {
+                  total: getTotal(cesta.value),
+                  idCesta: cesta.value._id,
+                  idTrabajador: trabajadorActivo.value._id,
+                  tipo: "DEUDA",
+                  tkrsData: null,
+                })
+                .then((resDeuda) => {
+                  if (resDeuda.data) {
+                    Swal.fire({
+                      icon: "success",
+                      title: "Venta modo deuda registrada correctamente",
+                      showConfirmButton: false,
+                      timer: 2000,
+                    });
+                  } else {
+                    throw Error(
+                      "No se ha podido registrar la venta en modo deuda"
+                    );
+                  }
+                })
+                .catch((err) => {
+                  Swal.fire("Oops...", err.message, "error");
+                });
             } else {
               goTo("/cobro");
             }
