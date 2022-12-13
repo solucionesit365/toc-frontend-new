@@ -16,7 +16,26 @@
         v-for="(linea, indexX) in 6"
         v-bind:key="indexX"
       >
-        <button
+        <MDBBtn
+          v-if="arrayTeclas[indexX + 6 * index].idArticle"
+          @click="clickTecla(arrayTeclas[indexX + 6 * index])"
+          class="btn btn-primary w-100 d-inline-block esconderTexto"
+          :class="[
+            teclado[indexMenuActivo].arraySubmenus &&
+            teclado[indexMenuActivo].arraySubmenus.length > 0
+              ? 'teclasConSubmenu'
+              : 'teclas',
+          ]"
+          :style="{
+            'background-color':
+              '#' + arrayTeclas[indexX + 6 * index].color.toString(16),
+            color: getTextColor(
+              '#' + arrayTeclas[indexX + 6 * index].color.toString(16)
+            ),
+          }"
+          >{{ arrayTeclas[indexX + 6 * index].nombreArticulo }}</MDBBtn
+        >
+        <!-- <button
           v-if="arrayTeclas[indexX + 6 * index].idArticle"
           @click="clickTecla(arrayTeclas[indexX + 6 * index])"
           class="btn btn-primary w-100 d-inline-block esconderTexto"
@@ -35,7 +54,7 @@
           }"
         >
           {{ arrayTeclas[indexX + 6 * index].nombreArticulo }}
-        </button>
+        </button> -->
         <button
           v-else
           class="btn btn-primary w-100 invisible"
@@ -58,12 +77,14 @@ import { computed, onMounted, provide, ref } from "vue";
 import PesoComponent from "./PesoComponent.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { MDBBtn } from "mdb-vue-ui-kit";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 export default {
   name: "TeclasComponent",
   components: {
     PesoComponent,
+    MDBBtn,
   },
   setup(_props, { expose }) {
     const store = useStore();
