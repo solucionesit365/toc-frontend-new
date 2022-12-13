@@ -12,12 +12,15 @@
               Dinero recibido:
               {{ Number(totalRecibido + cantidadTkrs).toFixed(2) }} €
             </li>
-            <li class="sizeLetrasCambio">Dinero a pagar: {{ aPagar }}</li>
+            <li class="sizeLetrasCambio">
+              Dinero a pagar:
+              {{ (Math.round(aPagar * 100) / 100).toFixed(2) }} €
+            </li>
             <li
               v-if="cuenta != null && cuenta != undefined && cuenta > 0"
               class="estiloFalta sizeLetrasCambio"
             >
-              Faltan {{ cuenta.toFixed(2) }} €
+              Faltan {{ (Math.round(cuenta * 100) / 100).toFixed(2) }} €
             </li>
             <li
               v-if="cuenta != null && cuenta != undefined && cuenta == 0"
@@ -29,7 +32,11 @@
               v-if="cuenta != null && cuenta != undefined && cuenta < 0"
               class="estiloSobra sizeLetrasCambio"
             >
-              Sobran {{ (aPagar - totalRecibido).toFixed(2) }} €
+              Sobran
+              {{
+                (Math.round((aPagar - totalRecibido) * 100) / 100).toFixed(2)
+              }}
+              €
             </li>
           </MDBCardText>
           <MDBBtn
@@ -124,7 +131,6 @@ export default {
     });
 
     function sumar(x) {
-      console.log(totalRecibido.value, x, cantidadTkrs.value);
       totalRecibido.value += x;
       historial.value.push(x);
     }

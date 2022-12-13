@@ -37,8 +37,8 @@
           <th class="titulosTicket">Unidades</th>
         </tr>
         <tr
-          v-for="(item, index) of ticketSeleccionado.lista"
-          v-bind:key="{ index }"
+          v-for="(item, index) of ticketSeleccionado.cesta.lista"
+          v-bind:key="index"
         >
           <td>{{ item.nombre }}</td>
           <td>{{ item.subtotal.toFixed(2) }} €</td>
