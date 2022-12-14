@@ -46,7 +46,12 @@
       >
     </div>
     <div class="row mt-2">
-      <MDBBtn color="primary" size="lg" class="w-100"
+      <MDBBtn
+        color="primary"
+        size="lg"
+        class="w-100"
+        v-if="modalImpresoraRef"
+        @click="modalImpresoraRef.abrirModal()"
         >Config. VID y PID impresora, Visor</MDBBtn
       >
     </div>
@@ -82,6 +87,7 @@
     </div>
   </div>
   <VolverComponent />
+  <ModalImpresoraComponent ref="modalImpresoraRef" />
 </template>
 
 <script>
@@ -89,14 +95,19 @@ import VolverComponent from "../components/Volver.vue";
 import { MDBBtn } from "mdb-vue-ui-kit";
 import Swal from "sweetalert2";
 import axios from "axios";
+import ModalImpresoraComponent from "../components/tecnico/ModalImpresoraComponent.vue";
+import { ref } from "vue";
 
 export default {
   name: "TecnicoView",
   components: {
     VolverComponent,
+    ModalImpresoraComponent,
     MDBBtn,
   },
   setup() {
+    const modalImpresoraRef = ref(null);
+
     function descargarClientesFinales() {
       axios
         .post("clientes/descargarClientesFinales")
@@ -172,6 +183,7 @@ export default {
       cambiarPrecio,
       actualizarParametros,
       goToDoctor,
+      modalImpresoraRef,
     };
   },
 };
