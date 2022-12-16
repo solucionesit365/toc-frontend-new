@@ -118,31 +118,7 @@ export default {
     const concepto = ref("");
 
     function imprimirUltimoCierre() {
-      axios.post("/caja/getDatosUltimoCierre").then((caja) => {
-        axios
-          .post("/trabajadores/getTrabajadorByID", {
-            id: caja.data.info[0].idDependienta,
-          })
-          .then((trabajador) => {
-            caja.data.info[0].idDependienta = trabajador.data.trabajador.nombre;
-
-            axios
-              .post("/caja/getDatosMoviments", {
-                fechaInicio: caja.data.info[0].inicioTime,
-                fechaFinal: caja.data.info[0].finalTime,
-              })
-              .then((arrayMoviments) => {
-                caja.data.info[0].movimientos = arrayMoviments.data.info;
-                axios
-                  .post("/impresora/imprimirCaja", {
-                    caja: caja.data.info[0],
-                  })
-                  .then((resultado) => {
-                    console.log(resultado);
-                  });
-              });
-          });
-      });
+      axios.post("caja/imprimirUltimoCierre");
     }
 
     onMounted(() => {

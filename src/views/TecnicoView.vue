@@ -23,8 +23,8 @@
         color="primary"
         size="lg"
         class="w-100"
-        @click="descargarTicketInfo()"
-        >Descargar info. ticket finales</MDBBtn
+        @click="actualizarParametros()"
+        >Actualizar parámetros tienda</MDBBtn
       >
     </div>
     <div class="row mt-2">
@@ -70,15 +70,6 @@
     </div>
     <div class="row mt-2">
       <MDBBtn color="primary" size="lg" class="w-100">Listado de ventas</MDBBtn>
-    </div>
-    <div class="row mt-2">
-      <MDBBtn
-        color="primary"
-        size="lg"
-        class="w-100"
-        @click="actualizarParametros()"
-        >Actualizar parametros GDT</MDBBtn
-      >
     </div>
     <div class="row mt-2">
       <MDBBtn color="primary" size="lg" class="w-100" @click="goToDoctor()"
@@ -154,8 +145,21 @@ export default {
       console.log("actualizarTrabajadores");
     }
 
+    /* Eze 4.0 */
     function actualizarTeclados() {
-      console.log("actualizarTeclados");
+      axios
+        .post("teclado/actualizarTeclado")
+        .then((res) => {
+          if (res.data) {
+            Swal.fire("OK", "Teclado actualizado correctamente", "success");
+            document.location.href = "http://localhost:3000";
+          } else {
+            throw Error("No se ha podido actualizar el teclado");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
     }
 
     function imprimirTest() {
@@ -167,7 +171,19 @@ export default {
     }
 
     function actualizarParametros() {
-      console.log("actualizarParametros");
+      axios
+        .get("parametros/actualizarParametros")
+        .then((res) => {
+          if (res.data) {
+            Swal.fire("OK", "Parámetros actualizados correctamente", "success");
+            document.location.href = "http://localhost:3000";
+          } else {
+            throw Error("No se han podido actualizar los parámetros");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Oops...", err.message, "error");
+        });
     }
 
     function goToDoctor() {
