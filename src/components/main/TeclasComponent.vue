@@ -70,11 +70,13 @@
     </div>
   </template>
   <PesoComponent ref="modalPesoRef" />
+  <SuplementosComponent ref="modalSuplementosRef" />
 </template>
 
 <script>
 import { computed, onMounted, provide, ref } from "vue";
 import PesoComponent from "./PesoComponent.vue";
+import SuplementosComponent from "./SuplementosComponent.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { MDBBtn } from "mdb-vue-ui-kit";
@@ -85,6 +87,7 @@ export default {
   components: {
     PesoComponent,
     MDBBtn,
+    SuplementosComponent,
   },
   setup(_props, { expose }) {
     const store = useStore();
@@ -102,6 +105,7 @@ export default {
       () => store.state.Teclado.indexSubmenuActivo
     );
     const modalPesoRef = ref(null);
+    const modalSuplementosRef = ref(null);
     const unidadesAplicar = computed(() => store.state.Unidades.unidades);
 
     const cesta = computed(() => {
@@ -138,8 +142,17 @@ export default {
           throw Error("Es necesario una cesta activa para añadir un artículo");
 
         if (item.esSumable) {
-          if (store.getters["Configuracion/suplementosActivos"]) {
-            console.log("COMPROBAR SI TIENE SUPLEMENTOS");
+          console.log(
+            "activo: ",
+            store.getters["Configuracion/suplementosActivos"]
+          );
+          console.log(item);
+          console.log("length: ", item.suplementos?.length);
+          if (
+            store.getters["Configuracion/suplementosActivos"] &&
+            item.suplementos?.length > 0
+          ) {
+            modalSuplementosRef.value.abrirModal();
           } else {
             const resClick = await axios.post("teclado/clickTeclaArticulo", {
               idArticulo: item.idArticle,
@@ -260,6 +273,7 @@ export default {
       arrayTeclas,
       getTextColor,
       modalPesoRef,
+      modalSuplementosRef,
       clickTecla,
     };
   },
