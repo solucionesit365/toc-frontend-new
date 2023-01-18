@@ -1,53 +1,47 @@
 <template>
-  <!-- Button trigger modal -->
-  <MDBBtn
-    color="primary"
-    aria-controls="modalAlergenos"
-    @click="modalAlergenos = true"
-  >
-    Launch demo modal
-  </MDBBtn>
   <MDBModal
     id="modalAlergenos"
     tabindex="-1"
     labelledby="modalAlergenosLabel"
     v-model="modalAlergenos"
+    fullscreen
   >
-    <MDBModalHeader>
-      <MDBModalTitle id="modalAlergenosLabel"> Modal title </MDBModalTitle>
-    </MDBModalHeader>
-    <MDBModalBody>...</MDBModalBody>
+    <iframe
+      :src="url"
+      style="position: absolute; height: 90%; width: 90%; border: none"
+    ></iframe>
     <MDBModalFooter>
-      <MDBBtn color="secondary" @click="modalAlergenos = false">Close</MDBBtn>
-      <MDBBtn color="primary">Save changes</MDBBtn>
+      <MDBBtn color="danger" size="lg" @click="modalAlergenos = false"
+        >Cerrar</MDBBtn
+      >
     </MDBModalFooter>
   </MDBModal>
 </template>
 
 <script>
-import {
-  MDBModal,
-  MDBModalHeader,
-  MDBModalTitle,
-  MDBModalBody,
-  MDBModalFooter,
-  MDBBtn,
-} from "mdb-vue-ui-kit";
+import { ref } from "vue";
+import { MDBModal, MDBModalFooter, MDBBtn } from "mdb-vue-ui-kit";
+import { useStore } from "vuex";
 export default {
   name: "ModalAlergenosComponent",
   components: {
     MDBModal,
-    MDBModalHeader,
-    MDBModalTitle,
-    MDBModalBody,
     MDBModalFooter,
     MDBBtn,
   },
   setup(_props, { expose }) {
     const modalAlergenos = ref(false);
+    const url = ref("");
+    const store = useStore();
+    const parametros = store.getters["Configuracion/parametros"];
 
     function abrirModal(idArticulo) {
+      setUrl(idArticulo);
       modalAlergenos.value = true;
+    }
+
+    function setUrl(idArticulo) {
+      url.value = `http://silema.hiterp.com/Facturacion/ElForn/gestion/FichaTecnicaHtml.asp?codi=${idArticulo}&Llic=${parametros?.licencia}`;
     }
 
     expose({
@@ -57,6 +51,7 @@ export default {
     return {
       modalAlergenos,
       abrirModal,
+      url,
     };
   },
 };

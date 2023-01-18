@@ -19,6 +19,9 @@
         <MDBBtn
           v-if="arrayTeclas[indexX + 6 * index].idArticle"
           @click="clickTecla(arrayTeclas[indexX + 6 * index])"
+          v-on:contextmenu="
+            abrirFicha(arrayTeclas[indexX + 6 * index].idArticle)
+          "
           class="btn btn-primary w-100 d-inline-block esconderTexto"
           :class="[
             teclado[indexMenuActivo].arraySubmenus &&
@@ -71,12 +74,14 @@
   </template>
   <PesoComponent ref="modalPesoRef" />
   <SuplementosComponent ref="modalSuplementosRef" />
+  <ModalAlergenosComponent ref="modalAlergenosRef" />
 </template>
 
 <script>
 import { computed, onMounted, provide, ref } from "vue";
 import PesoComponent from "./PesoComponent.vue";
 import SuplementosComponent from "./SuplementosComponent.vue";
+import ModalAlergenosComponent from "./ModalAlergenos.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { MDBBtn } from "mdb-vue-ui-kit";
@@ -88,6 +93,7 @@ export default {
     PesoComponent,
     MDBBtn,
     SuplementosComponent,
+    ModalAlergenosComponent,
   },
   setup(_props, { expose }) {
     const store = useStore();
@@ -107,6 +113,7 @@ export default {
     );
     const modalPesoRef = ref(null);
     const modalSuplementosRef = ref(null);
+    const modalAlergenosRef = ref(null);
     const unidadesAplicar = computed(() => store.state.Unidades.unidades);
 
     const cesta = computed(() => {
@@ -122,6 +129,10 @@ export default {
       }
       return null;
     });
+
+    function abrirFicha(idArticulo) {
+      modalAlergenosRef.value.abrirModal(idArticulo);
+    }
 
     function generarTecladoVacio() {
       let auxArray = [];
@@ -275,6 +286,8 @@ export default {
       getTextColor,
       modalPesoRef,
       modalSuplementosRef,
+      modalAlergenosRef,
+      abrirFicha,
       clickTecla,
     };
   },
