@@ -142,17 +142,17 @@ export default {
           throw Error("Es necesario una cesta activa para añadir un artículo");
 
         if (item.esSumable) {
-          console.log(
-            "activo: ",
-            store.getters["Configuracion/suplementosActivos"]
-          );
-          console.log(item);
-          console.log("length: ", item.suplementos?.length);
           if (
             store.getters["Configuracion/suplementosActivos"] &&
             item.suplementos?.length > 0
           ) {
-            modalSuplementosRef.value.abrirModal();
+            modalSuplementosRef.value.abrirModal(
+              item.idArticle,
+              cesta.value._id,
+              cesta.value.idCliente,
+              item.suplementos,
+              unidadesAplicar.value
+            );
           } else {
             const resClick = await axios.post("teclado/clickTeclaArticulo", {
               idArticulo: item.idArticle,

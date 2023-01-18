@@ -21,6 +21,12 @@
               >{{ item.nombre }}</span
             >
             <span class="xUnidades ms-2 d-inline"> x{{ item.unidades }}</span>
+            <li
+              v-for="(suplemento, index2) in item.arraySuplementos"
+              v-bind:key="index2"
+            >
+              {{ suplemento.nombre }}
+            </li>
           </td>
           <td>{{ item.subtotal.toFixed(2) }} €</td>
         </tr>
