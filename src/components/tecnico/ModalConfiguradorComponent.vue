@@ -98,6 +98,21 @@ export default {
         })
         .finally(() => {
           watch(prohibirBuscarArticulos, (newValue, oldValue) => {
+            axios
+              .post("parametros/setPropiedad", {
+                prohibirBuscarArticulos: newValue ? "Si" : "No",
+              })
+              .then((res) => {
+                if (!res.data) {
+                  throw Error(
+                    "No se ha podido actualizar el estado de prohibirBuscarArticulo"
+                  );
+                }
+              })
+              .catch((err) => {
+                prohibirBuscarArticulos.value = oldValue;
+                Swal.fire("Oops...", err.message, "error");
+              });
             console.log("nuevo: ", newValue);
             console.log("viejo: ", oldValue);
           });
