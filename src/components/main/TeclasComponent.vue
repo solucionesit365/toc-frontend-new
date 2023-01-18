@@ -92,6 +92,7 @@ export default {
   setup(_props, { expose }) {
     const store = useStore();
     const router = useRouter();
+    const parametros = computed(() => store.state.Configuracion.parametros);
     const teclado = computed(() => store.state.Teclado.objTeclado);
     const indexMenuActivo = computed(() => store.state.Teclado.indexMenuActivo);
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
@@ -143,7 +144,7 @@ export default {
 
         if (item.esSumable) {
           if (
-            store.getters["Configuracion/suplementosActivos"] &&
+            parametros.value?.prohibirSuplementos != "Si" &&
             item.suplementos?.length > 0
           ) {
             modalSuplementosRef.value.abrirModal(

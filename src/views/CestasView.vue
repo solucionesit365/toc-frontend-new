@@ -123,7 +123,8 @@ export default {
   },
   setup() {
     const store = useStore();
-    const vistaMesas = ref(store.getters["Configuracion/mesasActivas"]);
+    const vistaMesas = ref(false);
+    const parametros = computed(() => store.state.Configuracion.parametros);
     const arrayCestas = computed(() => store.state.Cestas.arrayCestas);
     const arrayMesas = ref([]);
     const arrayTrabajadores = computed(
@@ -135,11 +136,13 @@ export default {
     const idCestaSeleccionada = ref(null);
 
     function switchMesas() {
-      if (vistaMesas.value) {
-        actualizarMesas();
-        vistaMesas.value = false;
-      } else {
-        vistaMesas.value = true;
+      if (parametros.value?.mesas === "Si") {
+        if (vistaMesas.value) {
+          actualizarMesas();
+          vistaMesas.value = false;
+        } else {
+          vistaMesas.value = true;
+        }
       }
     }
 

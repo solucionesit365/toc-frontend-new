@@ -8,6 +8,20 @@ const socket = io("http://localhost:5051");
 const toast = useToast();
 
 /* Eze 4.0 */
+socket.on("cargarConfiguracion", (parametros) => {
+  try {
+    if (parametros) {
+      store.dispatch("Configuracion/setParametros", parametros);
+    } else {
+      throw Error("Error, parametros no es correcto");
+    }
+  } catch (err) {
+    console.log(err);
+    toast.error(err.message);
+  }
+});
+
+/* Eze 4.0 */
 socket.on("cargarTrabajadores", (arrayTrabajadores) => {
   try {
     if (arrayTrabajadores) {

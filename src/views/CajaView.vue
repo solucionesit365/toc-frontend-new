@@ -15,6 +15,7 @@
     <MDBBtn
       outline="dark"
       class="opcionesPrincipales"
+      :class="{ oculto: parametros?.prohibirEntradas === 'Si' }"
       @click="goTo('/menu/caja/entradaDinero')"
       >Entrada de dinero</MDBBtn
     >
@@ -48,8 +49,9 @@
 import axios from "axios";
 import { MDBBtn } from "mdb-vue-ui-kit";
 import Swal from "sweetalert2";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 export default {
   name: "CajaView",
@@ -59,6 +61,9 @@ export default {
   setup() {
     const router = useRouter();
     const cajaAbierta = ref(null);
+    const store = useStore();
+    const parametros = computed(() => store.state.Configuracion.parametros);
+
     function goTo(x) {
       router.push(x);
     }
@@ -81,6 +86,7 @@ export default {
     return {
       goTo,
       cajaAbierta,
+      parametros,
     };
   },
 };
@@ -93,5 +99,8 @@ export default {
   font-weight: bold;
   font-size: 1.1rem;
   margin-left: 0.5rem;
+}
+.oculto {
+  visibility: hidden;
 }
 </style>

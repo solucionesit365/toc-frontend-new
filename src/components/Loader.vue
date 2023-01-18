@@ -22,6 +22,7 @@ export default {
   name: "LoaderComponent",
   setup() {
     setTimeout(function () {
+      tocGame.cargarConfiguracion();
       tocGame.cargarCestas();
       tocGame.cargarVentas();
       tocGame.cargarTeclado();

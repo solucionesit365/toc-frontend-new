@@ -1,27 +1,24 @@
+import { tocGame } from "../services/tocGame";
+
 export default {
   namespaced: true,
   state: {
-    suplementos: true,
-    mesas: false,
+    parametros: null,
   },
   getters: {
-    suplementosActivos: (state) => state.suplementos,
-    mesasActivas: (state) => state.mesas,
+    // suplementosActivos: (state) => state.suplementos,
+    // mesasActivas: (state) => state.mesas,
+    parametros: (state) => state.parametros,
   },
   mutations: {
-    setSuplementosMutation(state, payload) {
-      state.suplementos = payload;
-    },
-    setMesasMutation(state, payload) {
-      state.mesas = payload;
+    setParametrosMutation(state, payload) {
+      state.parametros = payload;
     },
   },
   actions: {
-    setSuplemetos({ commit }, payload) {
-      commit("setSuplementosMutation", payload);
-    },
-    setMesas({ commit }, payload) {
-      commit("setMesasMutation", payload);
+    setParametros({ commit }, payload) {
+      commit("setParametrosMutation", payload);
+      tocGame.cargarConfiguracion();
     },
   },
 };

@@ -41,6 +41,9 @@
       @click="refModalArticulos.abrirModal()"
       outline="secondary"
       class="botones ms-1"
+      :class="{
+        oculto: parametros?.prohibirBuscarArticulos === 'Si',
+      }"
       ><MDBIcon icon="search" size="4x"
     /></MDBBtn>
     <MDBBtn
@@ -112,6 +115,7 @@ export default {
   },
   setup(_props, { expose }) {
     const store = useStore();
+    const parametros = computed(() => store.state.Configuracion.parametros);
     const refModalClientes = ref(null);
     const refModalArticulos = ref(null);
     const refModalUnidades = ref(null);
@@ -234,6 +238,7 @@ export default {
       refModalUnidades,
       resetGeneral,
       consultarPuntos,
+      parametros,
     };
   },
 };
@@ -267,5 +272,8 @@ $sizeHeight: 5rem;
 }
 .fondoCliente {
   background-color: #caffcc;
+}
+.oculto {
+  visibility: hidden;
 }
 </style>

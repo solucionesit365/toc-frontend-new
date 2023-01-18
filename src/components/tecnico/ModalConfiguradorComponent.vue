@@ -22,6 +22,18 @@
               >Prohibir buscar artículos</label
             >
           </div>
+          <div class="form-check form-switch mt-3">
+            <input
+              class="form-check-input"
+              style="transform: scale(1.8)"
+              type="checkbox"
+              role="switch"
+              v-model="prohibirSuplementos"
+            />
+            <label class="form-check-label ms-4 texto"
+              >Prohibir suplementos</label
+            >
+          </div>
         </div>
         <div class="col">
           <div class="form-check form-switch">
@@ -35,6 +47,16 @@
             <label class="form-check-label ms-4 texto"
               >Prohibir entradas de dinero</label
             >
+          </div>
+          <div class="form-check form-switch mt-3">
+            <input
+              class="form-check-input"
+              style="transform: scale(1.8)"
+              type="checkbox"
+              role="switch"
+              v-model="mesas"
+            />
+            <label class="form-check-label ms-4 texto">Utilizar mesas</label>
           </div>
         </div>
       </div>
@@ -59,7 +81,7 @@ import axios from "axios";
 import { MDBModal, MDBModalBody, MDBBtn } from "mdb-vue-ui-kit";
 import Swal from "sweetalert2";
 
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, nextTick } from "vue";
 export default {
   name: "ConfiguradorComponent",
   components: {
@@ -71,6 +93,8 @@ export default {
     const modalConfigurador = ref(false);
     const prohibirBuscarArticulos = ref(false);
     const prohibirEntradas = ref(false);
+    const prohibirSuplementos = ref(false);
+    const mesas = ref(true);
 
     function abrirModal() {
       modalConfigurador.value = true;
@@ -89,6 +113,9 @@ export default {
               resParams.data.prohibirBuscarArticulos === "Si" ? true : false;
             prohibirEntradas.value =
               resParams.data.prohibirEntradas === "Si" ? true : false;
+            prohibirSuplementos.value =
+              resParams.data.prohibirSuplementos === "Si" ? true : false;
+            mesas.value = resParams.data.mesas === "Si" ? true : false;
           } else {
             throw Error("No se han podido obtener los parámetros");
           }
@@ -100,25 +127,95 @@ export default {
           watch(prohibirBuscarArticulos, (newValue, oldValue) => {
             axios
               .post("parametros/setPropiedad", {
-                prohibirBuscarArticulos: newValue ? "Si" : "No",
+                parametros: { prohibirBuscarArticulos: newValue ? "Si" : "No" },
               })
               .then((res) => {
-                if (!res.data) {
+                if (res.data) {
+                  nextTick(() => {
+                    prohibirBuscarArticulos.value = newValue;
+                  });
+                } else {
                   throw Error(
                     "No se ha podido actualizar el estado de prohibirBuscarArticulo"
                   );
                 }
               })
               .catch((err) => {
-                prohibirBuscarArticulos.value = oldValue;
+                nextTick(() => {
+                  prohibirBuscarArticulos.value = oldValue;
+                });
                 Swal.fire("Oops...", err.message, "error");
               });
-            console.log("nuevo: ", newValue);
-            console.log("viejo: ", oldValue);
           });
+
           watch(prohibirEntradas, (newValue, oldValue) => {
-            console.log("nuevo: ", newValue);
-            console.log("viejo: ", oldValue);
+            axios
+              .post("parametros/setPropiedad", {
+                parametros: { prohibirEntradas: newValue ? "Si" : "No" },
+              })
+              .then((res) => {
+                if (res.data) {
+                  nextTick(() => {
+                    prohibirEntradas.value = newValue;
+                  });
+                } else {
+                  throw Error(
+                    "No se ha podido actualizar el estado de prohibirEntradas"
+                  );
+                }
+              })
+              .catch((err) => {
+                nextTick(() => {
+                  prohibirEntradas.value = oldValue;
+                });
+                Swal.fire("Oops...", err.message, "error");
+              });
+          });
+
+          watch(prohibirSuplementos, (newValue, oldValue) => {
+            axios
+              .post("parametros/setPropiedad", {
+                parametros: { prohibirSuplementos: newValue ? "Si" : "No" },
+              })
+              .then((res) => {
+                if (res.data) {
+                  nextTick(() => {
+                    prohibirSuplementos.value = newValue;
+                  });
+                } else {
+                  throw Error(
+                    "No se ha podido actualizar el estado de prohibirSuplementos"
+                  );
+                }
+              })
+              .catch((err) => {
+                nextTick(() => {
+                  prohibirSuplementos.value = oldValue;
+                });
+                Swal.fire("Oops...", err.message, "error");
+              });
+          });
+
+          watch(mesas, (newValue, oldValue) => {
+            axios
+              .post("parametros/setPropiedad", {
+                parametros: { mesas: newValue ? "Si" : "No" },
+              })
+              .then((res) => {
+                if (res.data) {
+                  nextTick(() => {
+                    mesas.value = newValue;
+                  });
+                } else {
+                  throw Error("No se ha podido actualizar el estado de mesas");
+                }
+              })
+              .catch((err) => {
+                nextTick(() => {
+                  mesas.value = oldValue;
+                });
+                Swal.fire("Oops...", err.message, "error");
+              });
           });
         });
     });
@@ -127,6 +224,8 @@ export default {
       modalConfigurador,
       prohibirBuscarArticulos,
       prohibirEntradas,
+      prohibirSuplementos,
+      mesas,
     };
   },
 };
