@@ -2,6 +2,15 @@
   <div class="w-50 mx-auto">
     <div class="row mt-2">
       <MDBBtn
+        color="success"
+        size="lg"
+        class="w-100"
+        @click="abrirConfigurador()"
+        >Configurador</MDBBtn
+      >
+    </div>
+    <div class="row mt-2">
+      <MDBBtn
         color="primary"
         size="lg"
         class="w-100"
@@ -79,6 +88,7 @@
   </div>
   <VolverComponent />
   <ModalImpresoraComponent ref="modalImpresoraRef" />
+  <ModalConfigurador ref="modalConfiguradorRef" />
 </template>
 
 <script>
@@ -87,6 +97,7 @@ import { MDBBtn } from "mdb-vue-ui-kit";
 import Swal from "sweetalert2";
 import axios from "axios";
 import ModalImpresoraComponent from "../components/tecnico/ModalImpresoraComponent.vue";
+import ModalConfigurador from "../components/tecnico/ModalConfiguradorComponent.vue";
 import { ref } from "vue";
 
 export default {
@@ -94,10 +105,16 @@ export default {
   components: {
     VolverComponent,
     ModalImpresoraComponent,
+    ModalConfigurador,
     MDBBtn,
   },
   setup() {
     const modalImpresoraRef = ref(null);
+    const modalConfiguradorRef = ref(null);
+
+    function abrirConfigurador() {
+      if (modalConfiguradorRef.value) modalConfiguradorRef.value.abrirModal();
+    }
 
     function descargarClientesFinales() {
       axios
@@ -190,6 +207,7 @@ export default {
       console.log("goToDoctor");
     }
     return {
+      abrirConfigurador,
       descargarClientesFinales,
       descargarTarifasEspeciales,
       descargarTicketInfo,
@@ -200,6 +218,7 @@ export default {
       actualizarParametros,
       goToDoctor,
       modalImpresoraRef,
+      modalConfiguradorRef,
     };
   },
 };
