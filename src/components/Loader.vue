@@ -23,6 +23,7 @@ export default {
   setup() {
     setTimeout(function () {
       tocGame.cargarConfiguracion();
+      tocGame.recargarPromosCache();
       tocGame.cargarCestas();
       tocGame.cargarVentas();
       tocGame.cargarTeclado();

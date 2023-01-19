@@ -1,11 +1,9 @@
 import { io } from "socket.io-client";
-import { useToast } from "vue-toastification";
 import store from "../store/index";
 import router from "../router/index";
 import Swal from "sweetalert2";
 
 const socket = io("http://localhost:5051");
-const toast = useToast();
 
 /* Eze 4.0 */
 socket.on("cargarConfiguracion", (parametros) => {
@@ -17,7 +15,7 @@ socket.on("cargarConfiguracion", (parametros) => {
     }
   } catch (err) {
     console.log(err);
-    toast.error(err.message);
+    Swal.fire("Oops...", err.message, "error");
   }
 });
 
@@ -37,7 +35,7 @@ socket.on("cargarTrabajadores", (arrayTrabajadores) => {
     }
   } catch (err) {
     console.log(err);
-    toast.error(err.message);
+    Swal.fire("Oops...", err.message, "error");
   }
 });
 
@@ -51,7 +49,7 @@ socket.on("cargarCestas", (arrayCestas) => {
     }
   } catch (err) {
     console.log(err);
-    toast.error(err.message);
+    Swal.fire("Oops...", err.message, "error");
   }
 });
 
@@ -65,7 +63,7 @@ socket.on("cargarVentas", (arrayTickets) => {
     }
   } catch (err) {
     console.log(err);
-    toast.error(err.message);
+    Swal.fire("Oops...", err.message, "error");
   }
 });
 
@@ -79,7 +77,7 @@ socket.on("cargarTeclado", (teclado) => {
     }
   } catch (err) {
     console.log(err);
-    toast.error(err.message);
+    Swal.fire("Oops...", err.message, "error");
   }
 });
 
@@ -98,9 +96,12 @@ socket.on("resDatafono", (data) => {
 
 socket.on("resConsultaPuntos", (data) => {
   if (data.error == false) {
-    toast.info(`Puntos del cliente: ${data.info}`);
+    Swal.fire({
+      icon: "info",
+      text: `Puntos del cliente: ${data.info}`,
+    });
   } else {
-    toast.error(data.mensaje);
+    Swal.fire("Oops...", data.mensaje, "error");
   }
 });
 
@@ -118,28 +119,10 @@ socket.on("consultaPaytef", (data) => {
 socket.on("consultaPaytefRefund", (data) => {
   if (data) {
     Swal.fire("OK", "Devolución aceptada", "success");
-    // store.dispatch("Datafono/setEstado", "APROBADA");
   } else {
     Swal.fire("Oops...", "Devolución denegada", "error");
-    // store.dispatch("Datafono/setEstado", "DENEGADA");
-    // setTimeout(() => {
-    //   store.dispatch("Datafono/setEstado", "AGAIN");
-    // }, 3000);
   }
 });
-
-// socket.on('resPaytef', (data) => {
-//   // store.dispatch('setEsperandoDatafono', false);
-//   // if (data.error == false) {
-//   //   store.dispatch('Cestas/setIdAction', -1);
-//   //   store.dispatch('setModoActual', 'NORMAL');
-//   //   store.dispatch('Clientes/resetClienteActivo');
-//   //   store.dispatch('Footer/resetMenuActivo');
-//   //   router.push({ name: 'Home', params: { tipoToast: 'success', mensajeToast: 'Ticket creado' } });
-//   // } else {
-//   //   toast.error(data.mensaje);
-//   // }
-// });
 
 socket.on("resDatafono", (data) => {
   store.dispatch("setEsperandoDatafono", false);
@@ -153,7 +136,7 @@ socket.on("resDatafono", (data) => {
       params: { tipoToast: "success", mensajeToast: "Ticket creado" },
     });
   } else {
-    toast.error(data.mensaje);
+    Swal.fire("Oops...", data.mensaje, "error");
   }
 });
 

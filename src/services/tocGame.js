@@ -73,6 +73,9 @@ class tocGameV3 {
   cargarConfiguracion = () => emitSocket("cargarConfiguracion");
 
   /* Eze 4.0 */
+  recargarPromosCache = () => emitSocket("recargarPromociones");
+
+  /* Eze 4.0 */
   cargarVentas = () => emitSocket("cargarVentas");
 
   /* Eze 4.0 */
